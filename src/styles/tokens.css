@@ -1,0 +1,63 @@
+/* Rookery Space (dark) tokens, copied from the app's src/renderer/theme/themes.ts so the site and
+   the app share one palette. The site is always dark: it's set in space. */
+:root {
+  --bg: #0e1734;
+  --bg-elev: #111c3d;
+  --surface: #13203f;
+  --surface-2: #19223f;
+  --surface-3: #1c2a55;
+  --border: #2e3f72;
+  --border-soft: #223163;
+  --text: #f2eee3;
+  --text-2: #d9dfea;
+  --muted: #8a94b8;
+  --faint: #5b6690;
+  --accent: #ffc93c;
+  --accent-ink: #0e1734;
+  --accent-soft: rgba(255, 201, 60, 0.16);
+  --info: #4cc9f0;
+  --info-soft: rgba(76, 201, 240, 0.14);
+  --danger: #ff6b6b;
+  --danger-soft: rgba(255, 107, 107, 0.14);
+  --warn: #ff8a3d;
+  --warn-soft: rgba(255, 138, 61, 0.14);
+  --success: #6ee7b7;
+  --success-soft: rgba(110, 231, 183, 0.14);
+  --purple: #a9a0d6;
+  --added-bg: rgba(110, 231, 183, 0.12);
+  --removed-bg: rgba(255, 107, 107, 0.12);
+  --shadow: rgba(4, 8, 22, 0.55);
+
+  --lane-0: #4cc9f0;
+  --lane-1: #ffc93c;
+  --lane-2: #ff6b6b;
+  --lane-3: #a9a0d6;
+  --lane-4: #ff8a3d;
+  --lane-5: #6ee7b7;
+  --lane-6: #f78fb3;
+  --lane-7: #8fb8ff;
+
+  /* The sky of the startup animation and the app icon */
+  --violet-hi: #4a3e9e;
+  --violet-lo: #1c1a4d;
+  --halo: #9c8cff;
+
+  --font-display: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter Variable', 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', Consolas, 'SF Mono', monospace;
+
+  --radius-lg: 22px;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --maxw: 1200px;
+  --nav-h: 68px;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.3, 1.5, 0.5, 1);
+
+  --glass: rgba(19, 32, 63, 0.72);
+  --glass-strong: rgba(17, 28, 61, 0.9);
+  --glow-accent: 0 0 0 1px rgba(255, 201, 60, 0.35), 0 10px 40px -8px rgba(255, 201, 60, 0.45);
+
+  color-scheme: dark;
+}

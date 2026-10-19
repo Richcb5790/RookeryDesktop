@@ -1,0 +1,421 @@
+/* ---------- Pinned stages (graph + isolate) ---------- */
+
+.graph-scene,
+.isolate-scene {
+  padding: 0;
+}
+
+.pin-stage {
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: calc(var(--nav-h) + 20px) 0 32px;
+}
+
+.stage-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.78fr) minmax(0, 1.22fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+}
+
+.stage-visual {
+  position: relative;
+  min-width: 0;
+}
+
+.steps {
+  --p: 0;
+  position: relative;
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps::before,
+.steps::after {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  bottom: 22px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--border-soft);
+}
+
+.steps::after {
+  bottom: auto;
+  height: calc((100% - 30px) * var(--p));
+  background: linear-gradient(var(--accent), var(--info));
+  box-shadow: 0 0 12px rgba(255, 201, 60, 0.6);
+}
+
+.step {
+  position: relative;
+  padding: 0 0 22px 38px;
+  opacity: 0.4;
+  transition: opacity 0.5s var(--ease-out);
+}
+
+.step::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 6px;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg);
+  transition:
+    background 0.4s,
+    border-color 0.4s,
+    box-shadow 0.4s;
+}
+
+.step.is-active,
+.step.is-done {
+  opacity: 1;
+}
+
+.step.is-done {
+  opacity: 0.62;
+}
+
+.step.is-active::before {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-soft), 0 0 18px var(--accent);
+}
+
+.step.is-done::before {
+  border-color: var(--info);
+  background: var(--info);
+}
+
+.step h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.14rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.step h3 .ic {
+  color: var(--accent);
+}
+
+.step p {
+  max-height: 9em;
+  margin-top: 6px;
+  overflow: hidden;
+  color: var(--text-2);
+  font-size: 0.97rem;
+  line-height: 1.6;
+  opacity: 0.85;
+  transition:
+    max-height 0.5s var(--ease-out),
+    opacity 0.4s,
+    margin 0.4s;
+}
+
+/* On wide screens only the active step explains itself, which keeps the pinned column short. */
+@media (min-width: 768px) {
+  :root[data-motion='full'] .step:not(.is-active) p {
+    max-height: 0;
+    margin-top: 0;
+    opacity: 0;
+  }
+}
+
+.pin-stage .h2 {
+  font-size: clamp(2rem, 3.7vw, 3.2rem);
+}
+
+.step code {
+  color: var(--info);
+}
+
+/* ---------- Graph window ---------- */
+
+.graph-window {
+  --rx: 0deg;
+  --ry: 0deg;
+  transform: perspective(1400px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.6s var(--ease-out);
+}
+
+.graph-window.tilting {
+  transition: transform 0.12s linear;
+}
+
+.graph-head {
+  display: grid;
+  grid-template-columns: var(--refs-w, 160px) var(--graph-w, 96px) 1fr;
+  align-items: center;
+  height: 30px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.graph-head span:first-child {
+  padding-right: 14px;
+  text-align: right;
+}
+
+.graph-head span:nth-child(2) {
+  padding-left: 6px;
+}
+
+.graph-body {
+  position: relative;
+  padding: 8px 14px 12px;
+  background:
+    linear-gradient(90deg, transparent calc(14px + var(--refs-w, 160px)), rgba(28, 42, 85, 0.25) calc(14px + var(--refs-w, 160px)), rgba(28, 42, 85, 0.25) calc(14px + var(--refs-w, 160px) + var(--graph-w, 96px)), transparent 0),
+    var(--bg);
+}
+
+.graph-svg {
+  position: absolute;
+  top: 8px;
+  left: calc(14px + var(--refs-w, 160px));
+  overflow: visible;
+  pointer-events: none;
+}
+
+.g-edge {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  transition: opacity 0.3s;
+}
+
+.g-node {
+  transition: opacity 0.3s;
+}
+
+.g-node text {
+  fill: var(--accent-ink);
+  font: 700 7.6px var(--font-body);
+  letter-spacing: 0.02em;
+}
+
+.graph-svg.focus .g-edge.dim,
+.graph-svg.focus .g-node.dim {
+  opacity: 0.16;
+}
+
+.graph-rows {
+  position: relative;
+}
+
+.g-row {
+  display: grid;
+  grid-template-columns: var(--refs-w, 160px) var(--graph-w, 96px) 1fr;
+  align-items: center;
+  height: var(--row-h, 34px);
+  border-radius: 6px;
+  color: var(--text-2);
+  transition: background 0.2s;
+}
+
+.g-row:hover,
+.g-row.hot {
+  background: rgba(169, 160, 214, 0.08);
+}
+
+.g-refs {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+  padding-right: 14px;
+}
+
+.g-msg {
+  grid-column: 3;
+  overflow: hidden;
+  padding-left: 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.g-row.merge .g-msg {
+  color: var(--muted);
+}
+
+.ref-pill.drop {
+  box-shadow: 0 0 0 3px rgba(255, 201, 60, 0.55), 0 0 22px rgba(255, 201, 60, 0.6);
+}
+
+.graph-tip {
+  position: absolute;
+  z-index: 3;
+  max-width: 300px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--glass-strong);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 40px -10px var(--shadow);
+  font-size: 12px;
+  line-height: 1.45;
+  pointer-events: none;
+}
+
+.graph-tip b {
+  display: block;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.graph-tip span {
+  color: var(--muted);
+}
+
+.drag-ghost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+}
+
+.drag-ghost::after {
+  /* A pointer arrow riding on the dragged label */
+  content: '';
+  position: absolute;
+  right: -10px;
+  bottom: -16px;
+  width: 18px;
+  height: 22px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 22'%3E%3Cpath d='M1.5 1.5v16l4.2-3.9 2.9 6.4 2.8-1.3-2.9-6.2 5.8-.3z' fill='%23F2EEE3' stroke='%230E1734' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat center / contain;
+}
+
+.drop-menu {
+  position: absolute;
+  z-index: 3;
+  min-width: 270px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--glass-strong);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 24px 60px -16px var(--shadow);
+  font-size: 12.5px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.drop-menu div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  color: var(--text-2);
+}
+
+.drop-menu div:first-child {
+  background: var(--info-soft);
+  color: var(--text);
+}
+
+.drop-menu .ic {
+  color: var(--muted);
+}
+
+.drop-menu b {
+  color: var(--text);
+}
+
+.float-pill {
+  position: absolute;
+  z-index: 2;
+  filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.45));
+}
+
+.float-pill .ref-pill {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 13.5px;
+}
+
+.fp-1 {
+  top: -26px;
+  left: 12%;
+}
+
+.fp-2 {
+  top: 34%;
+  right: -36px;
+}
+
+.fp-3 {
+  bottom: -18px;
+  left: 30%;
+}
+
+@media (max-width: 1100px) {
+  .stage-grid {
+    grid-template-columns: 1fr;
+  }
+  .stage-copy {
+    max-width: 640px;
+  }
+}
+
+@media (max-width: 767px) {
+  .pin-stage {
+    min-height: 0;
+    padding: 96px 0 72px;
+  }
+  .step {
+    opacity: 1;
+  }
+  .steps::after {
+    height: calc(100% - 30px);
+  }
+  .graph-window {
+    --refs-w: 0px;
+    --graph-w: 86px;
+    font-size: 12px;
+  }
+  .graph-window .g-refs {
+    display: none;
+  }
+  .graph-head span:first-child {
+    display: none;
+  }
+  .graph-head {
+    grid-template-columns: var(--graph-w) 1fr;
+  }
+  .aw-crumb,
+  .float-pill {
+    display: none;
+  }
+  .aw-tools {
+    margin: 0;
+  }
+}
+
+/* Without motion nothing is pinned, so every step reads at once. */
+:root[data-motion='reduce'] .step {
+  opacity: 1;
+}
+
+:root[data-motion='reduce'] .steps::after {
+  height: calc(100% - 30px);
+}

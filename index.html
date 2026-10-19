@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rookery · See every branch's story</title>
+    <meta
+      name="description"
+      content="Rookery is a desktop Git client with a living commit graph, branch isolation that tells each branch's story, GitHub, GitLab, Bitbucket and Azure DevOps integrations, and your own local AI agent for conflicts and commit explanations."
+    />
+    <meta name="theme-color" content="#0E1734" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/og.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rookery" />
+    <meta property="og:title" content="Rookery · See every branch's story" />
+    <meta
+      property="og:description"
+      content="A desktop Git client that draws your history like a star map, isolates any branch to tell its story, and works with the AI agent you already use."
+    />
+    <meta property="og:url" content="https://richcb5790.github.io/RookeryDesktop/" />
+    <meta property="og:image" content="https://richcb5790.github.io/RookeryDesktop/og.png" />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <canvas id="starfield" aria-hidden="true"></canvas>
+
+    <header class="nav" id="nav">
+      <div class="nav-inner container">
+        <a class="brand" href="#top" aria-label="Rookery, back to top">
+          <img src="./src/assets/brand/space-icon-small.svg" width="34" height="34" alt="" />
+          <span>Rookery</span>
+        </a>
+        <nav aria-label="Sections">
+          <ul class="nav-links">
+            <li><a href="#graph">Graph</a></li>
+            <li><a href="#integrations">Integrations</a></li>
+            <li><a href="#isolate">Isolate</a></li>
+            <li><a href="#agents">AI agents</a></li>
+            <li><a href="#features">Features</a></li>
+          </ul>
+        </nav>
+        <a class="btn btn-primary btn-sm nav-cta" href="#download"><i data-icon="download" data-size="16"></i>Download</a>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <!-- ============ HERO ============ -->
+      <section class="hero" id="top" data-parallax>
+        <div class="hero-sky" aria-hidden="true">
+          <div class="nebula n1" data-speed="0.25"></div>
+          <div class="nebula n2" data-speed="0.4"></div>
+          <svg class="planet" data-speed="0.55" data-depth="0.4" viewBox="0 0 220 220" aria-hidden="true">
+            <defs>
+              <radialGradient id="pl-body" cx="0.35" cy="0.3" r="0.8">
+                <stop offset="0" stop-color="#8f84e0" />
+                <stop offset="0.55" stop-color="#4a3e9e" />
+                <stop offset="1" stop-color="#1c1a4d" />
+              </radialGradient>
+              <linearGradient id="pl-ring" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#a9a0d6" stop-opacity="0" />
+                <stop offset="0.3" stop-color="#a9a0d6" stop-opacity="0.9" />
+                <stop offset="0.7" stop-color="#ffc93c" stop-opacity="0.7" />
+                <stop offset="1" stop-color="#ffc93c" stop-opacity="0" />
+              </linearGradient>
+              <clipPath id="pl-front"><rect x="0" y="110" width="220" height="110" /></clipPath>
+            </defs>
+            <ellipse cx="110" cy="110" rx="104" ry="22" fill="none" stroke="url(#pl-ring)" stroke-width="5" transform="rotate(-18 110 110)" opacity=".55" />
+            <circle cx="110" cy="110" r="62" fill="url(#pl-body)" />
+            <path d="M58 92c30 8 74 6 104-6M52 116c36 10 82 8 116-6" stroke="#fff" stroke-opacity=".09" stroke-width="6" fill="none" stroke-linecap="round" />
+            <g clip-path="url(#pl-front)" transform="rotate(-18 110 110)">
+              <ellipse cx="110" cy="110" rx="104" ry="22" fill="none" stroke="url(#pl-ring)" stroke-width="5" />
+            </g>
+          </svg>
+          <div class="constellation-wrap" data-depth="0.6">
+            <svg class="constellation" id="constellation" aria-hidden="true"></svg>
+          </div>
+        </div>
+
+        <div class="hero-inner container">
+          <div class="hero-copy">
+            <p class="eyebrow hero-eyebrow"><span class="pulse-dot"></span>A desktop Git client for Windows, macOS and Linux</p>
+            <h1 class="hero-title">
+              <span class="line"><span>Every branch</span></span>
+              <span class="line"><span class="grad-text">has a story.</span></span>
+            </h1>
+            <p class="hero-sub">
+              Rookery draws your history like a star map, then isolates any branch to show where it came from, what flowed
+              into it, and everywhere it landed. It works with the hosts you already use and hands conflicts to your own AI agent.
+            </p>
+            <div class="hero-cta">
+              <a class="btn btn-primary" id="hero-download" href="#download"><i data-icon="download" data-size="18"></i><span>Download Rookery</span></a>
+              <a class="btn btn-ghost" href="#graph">Take the tour<i data-icon="arrowDown" data-size="16"></i></a>
+            </div>
+            <p class="hero-meta" id="hero-meta">Runs on the git you already have · Your credentials never leave your machine</p>
+          </div>
+          <div class="hero-mascot" data-depth="1.3">
+            <div class="mascot-bob">
+              <div class="mascot" id="hero-mascot"></div>
+              <div class="mascot-shadow"></div>
+            </div>
+          </div>
+        </div>
+
+        <a class="scroll-cue" href="#graph" aria-label="Scroll to the tour"><span></span></a>
+      </section>
+
+      <!-- ============ COMMIT GRAPH ============ -->
+      <section class="scene graph-scene" id="graph" tabindex="-1" aria-labelledby="graph-title">
+        <div class="pin-stage">
+          <div class="container stage-grid">
+            <div class="stage-copy">
+              <p class="eyebrow">Visual commit graph</p>
+              <h2 class="h2" id="graph-title">Your history,<br />charted like a star map.</h2>
+              <ol class="steps" id="graph-steps">
+                <li class="step is-active">
+                  <h3><i data-icon="branch" data-size="18"></i>Every branch flies its own lane</h3>
+                  <p>Each line of work keeps its lane and color from tip to fork, so you can follow it down the whole history at a glance.</p>
+                </li>
+                <li class="step">
+                  <h3><i data-icon="merge" data-size="18"></i>Merges curve home</h3>
+                  <p>Merges arc back into the line they landed on. You can see where every piece of work ended up, not just that it did.</p>
+                </li>
+                <li class="step">
+                  <h3><i data-icon="pr" data-size="18"></i>Drag, drop, done</h3>
+                  <p>Drop one branch onto another to merge, rebase, fast-forward or open a pull request. Hover a commit to light up its line.</p>
+                </li>
+              </ol>
+            </div>
+
+            <div class="stage-visual" aria-hidden="true">
+              <div class="float-pill fp-1" data-depth="1.6"><span class="ref-pill" style="--pill: var(--lane-0)">main</span></div>
+              <div class="float-pill fp-2" data-depth="2.2"><span class="ref-pill" style="--pill: var(--lane-2)">feature/telemetry</span></div>
+              <div class="float-pill fp-3" data-depth="1.2"><span class="ref-pill" style="--pill: var(--lane-1)">develop</span></div>
+              <div class="app-window graph-window" data-tilt="4">
+                <div class="aw-tabs">
+                  <img class="aw-logo" src="./src/assets/brand/space-icon-small.svg" alt="" />
+                  <div class="aw-tab"><i data-icon="folder" data-size="13"></i>orbit-tracker</div>
+                </div>
+                <div class="aw-toolbar">
+                  <div class="aw-crumb"><small>Repository</small><b>orbit-tracker</b></div>
+                  <div class="aw-crumb"><small>Branch</small><b>main</b></div>
+                  <div class="aw-tools">
+                    <span class="aw-tool"><i data-icon="undo"></i>Undo</span>
+                    <span class="aw-tool"><i data-icon="pull"></i>Pull</span>
+                    <span class="aw-tool"><i data-icon="push"></i>Push</span>
+                    <span class="aw-tool"><i data-icon="branch"></i>Branch</span>
+                    <span class="aw-tool"><i data-icon="isolate"></i>Isolate</span>
+                  </div>
+                </div>
+                <div class="graph-head"><span>Branch / Tag</span><span>Graph</span><span>Commit message</span></div>
+                <div class="graph-body" id="graph-body">
+                  <svg class="graph-svg" id="graph-svg"></svg>
+                  <div class="graph-rows" id="graph-rows"></div>
+                  <div class="graph-tip" id="graph-tip" hidden></div>
+                  <div class="drag-ghost" id="drag-ghost"><span class="ref-pill" style="--pill: var(--lane-3)">feature/sensors</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ INTEGRATIONS ============ -->
+      <section class="scene integrations" id="integrations" tabindex="-1" aria-labelledby="int-title" data-parallax>
+        <div class="container int-grid">
+          <div class="int-copy">
+            <p class="eyebrow" data-reveal>Hosting integrations</p>
+            <h2 class="h2" id="int-title" data-reveal="1">Docked with every place your code lives.</h2>
+            <p class="lede" data-reveal="2">
+              Connect GitHub, GitLab, Bitbucket and Azure DevOps, plus Jira and Trello for issues. Pull requests and issues
+              show up next to the branches they belong to, and the Launchpad gathers everything waiting on you.
+            </p>
+            <ul class="int-cards">
+              <li class="int-card" data-reveal="1" data-hosts="github gitlab bitbucket azure">
+                <i data-icon="pr" data-size="20"></i>
+                <div>
+                  <h3>Pull requests beside branches</h3>
+                  <p>Open pull requests sit on their branch labels in the graph, with description, reviewers, checks and conflicts a click away.</p>
+                </div>
+              </li>
+              <li class="int-card" data-reveal="2" data-hosts="github gitlab bitbucket azure">
+                <i data-icon="branch" data-size="20"></i>
+                <div>
+                  <h3>Drag a branch to open a PR</h3>
+                  <p>Drop a branch on its remote and Rookery fills in your template. If the remote is behind, it pushes first.</p>
+                </div>
+              </li>
+              <li class="int-card" data-reveal="3" data-hosts="github gitlab azure jira trello">
+                <i data-icon="issue" data-size="20"></i>
+                <div>
+                  <h3>Start work from an issue</h3>
+                  <p>Pick an issue and get a branch named after it. The pull request that follows links back and closes it.</p>
+                </div>
+              </li>
+              <li class="int-card" data-reveal="4" data-hosts="github gitlab bitbucket azure jira trello">
+                <i data-icon="rocket" data-size="20"></i>
+                <div>
+                  <h3>The Launchpad</h3>
+                  <p>Reviews waiting for you, your open pull requests and issues assigned to you, from every account, in one tab.</p>
+                </div>
+              </li>
+            </ul>
+            <p class="trust-line" data-reveal><i data-icon="shield" data-size="18"></i>Tokens are encrypted with your OS keychain and never reach the window. Git keeps using your own credential helper.</p>
+          </div>
+
+          <div class="orbit-stage" aria-hidden="true">
+            <div class="orbit-system" id="orbit-system">
+              <div class="orbit-core">
+                <div class="core-glow"></div>
+                <img src="./src/assets/brand/space-icon.svg" alt="" />
+              </div>
+            </div>
+          </div>
+          <ul class="sr-only">
+            <li>GitHub and GitHub Enterprise Server: repositories, pull requests, issues</li>
+            <li>GitLab.com and self-managed GitLab: repositories, merge requests, issues</li>
+            <li>Bitbucket Cloud and Data Center: repositories, pull requests</li>
+            <li>Azure DevOps: repositories, pull requests, Boards work items</li>
+            <li>Jira Cloud and Data Center: issues</li>
+            <li>Trello: cards</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ ISOLATE ============ -->
+      <section class="scene isolate-scene" id="isolate" tabindex="-1" aria-labelledby="iso-title">
+        <div class="pin-stage">
+          <div class="container stage-grid iso-grid">
+            <div class="stage-copy">
+              <p class="eyebrow">Isolate a branch</p>
+              <h2 class="h2" id="iso-title">Shine a light on any branch's story.</h2>
+              <ol class="steps" id="iso-steps">
+                <li class="step is-active">
+                  <h3><i data-icon="graph" data-size="18"></i>Real histories get crowded</h3>
+                  <p>Seven lines of work, merges going every direction. Which one is yours, and where did it end up?</p>
+                </li>
+                <li class="step">
+                  <h3><i data-icon="isolate" data-size="18"></i>Isolate it</h3>
+                  <p>One click and everything unrelated falls away. The branch moves to the first lane with only what it touched: its own commits, what merged in, and where it merged out.</p>
+                </li>
+                <li class="step">
+                  <h3><i data-icon="map" data-size="18"></i>Read the map</h3>
+                  <p>The same story as a map: created from <code>main</code>, <code>feature/sensors</code> merged in, then shipped to <code>develop</code> and <code>main</code>.</p>
+                </li>
+                <li class="step">
+                  <h3><i data-icon="list" data-size="18"></i>Trust the timeline</h3>
+                  <p>Every fact says where it came from: recorded by Rookery, the branch reflog, a merge message, or inferred from the graph.</p>
+                </li>
+              </ol>
+            </div>
+
+            <div class="stage-visual" aria-hidden="true">
+              <div class="app-window iso-window" id="iso-window">
+                <div class="aw-tabs">
+                  <img class="aw-logo" src="./src/assets/brand/space-icon-small.svg" alt="" />
+                  <div class="aw-tab"><i data-icon="folder" data-size="13"></i>moon-lander</div>
+                </div>
+                <div class="aw-toolbar">
+                  <div class="aw-crumb"><small>Repository</small><b>moon-lander</b></div>
+                  <div class="aw-tools">
+                    <span class="aw-tool"><i data-icon="pull"></i>Pull</span>
+                    <span class="aw-tool"><i data-icon="push"></i>Push</span>
+                    <span class="aw-tool"><i data-icon="branch"></i>Branch</span>
+                    <span class="aw-tool iso-btn" id="iso-btn"><i data-icon="isolate"></i>Isolate</span>
+                  </div>
+                </div>
+                <div class="lineage-bar" id="lineage-bar">
+                  <i data-icon="isolate" data-size="18" class="lb-icon"></i>
+                  <div class="lb-text">
+                    <b>Lineage of <span class="lb-branch">feature/docking</span></b>
+                    <small>Created from <b>main</b> · 1 merge in · merged into <b>main</b>, <b>develop</b> · 5 commits on its own line</small>
+                  </div>
+                  <div class="seg" role="tablist" aria-label="Lineage view" id="iso-tabs">
+                    <button type="button" role="tab" data-view="graph" aria-selected="true"><i data-icon="branch" data-size="14"></i>Graph</button>
+                    <button type="button" role="tab" data-view="map" aria-selected="false"><i data-icon="map" data-size="14"></i>Map</button>
+                  </div>
+                </div>
+                <div class="iso-body">
+                  <div class="iso-main">
+                    <div class="graph-head"><span>Branch / Tag</span><span>Graph</span><span>Commit message</span></div>
+                    <div class="iso-graph" id="iso-graph">
+                      <svg class="graph-svg" id="iso-svg"></svg>
+                      <div class="graph-rows" id="iso-rows"></div>
+                      <div class="beam" id="iso-beam"></div>
+                    </div>
+                    <svg class="iso-map" id="iso-map" viewBox="0 0 560 470"></svg>
+                  </div>
+                  <aside class="timeline" id="iso-timeline">
+                    <h4>Timeline</h4>
+                    <ol>
+                      <li style="--c: var(--info)">
+                        <b><i data-icon="star" data-size="13"></i>Tip of feature/docking</b>
+                        <span class="sha">16855be</span>
+                      </li>
+                      <li style="--c: var(--accent)">
+                        <b><i data-icon="push" data-size="13"></i>Merged into main</b>
+                        <span>2 days ago · <span class="sha">edea25d</span></span>
+                        <em>from the commit graph</em>
+                      </li>
+                      <li style="--c: var(--purple)">
+                        <b><i data-icon="merge" data-size="13"></i>Merged in feature/sensors</b>
+                        <span>4 days ago · <span class="sha">16855be</span> · 2 commits</span>
+                        <em>from the merge commit message</em>
+                      </li>
+                      <li style="--c: var(--accent)">
+                        <b><i data-icon="push" data-size="13"></i>Merged into develop</b>
+                        <span>6 days ago · <span class="sha">fdf351d</span></span>
+                        <em>from the commit graph</em>
+                      </li>
+                      <li style="--c: var(--success)">
+                        <b><i data-icon="branch" data-size="13"></i>Created from main</b>
+                        <span>11 days ago · <span class="sha">7157e20</span></span>
+                        <em>from the branch reflog</em>
+                      </li>
+                    </ol>
+                  </aside>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ AGENTS ============ -->
+      <section class="scene agents" id="agents" tabindex="-1" aria-labelledby="ag-title" data-parallax>
+        <div class="agents-glow" data-speed="0.3" aria-hidden="true"></div>
+        <div class="container">
+          <div class="scene-head center">
+            <p class="eyebrow" data-reveal>Local AI agents</p>
+            <h2 class="h2" id="ag-title" data-reveal="1">Bring your own agent.<br /><span class="accent-text">Keep the final say.</span></h2>
+            <p class="lede" data-reveal="2">
+              Rookery has no AI of its own and no service behind it. It hands the work to the coding agent you already use,
+              signed in as you, and shows you what it proposes.
+            </p>
+          </div>
+
+          <div class="agent-picker" data-reveal="2">
+            <div class="chips" role="tablist" aria-label="Choose an agent" id="agent-chips">
+              <button type="button" role="tab" aria-selected="true" data-cmd="claude -p --output-format text">Claude Code</button>
+              <button type="button" role="tab" aria-selected="false" data-cmd="codex exec --sandbox read-only --skip-git-repo-check -">Codex</button>
+              <button type="button" role="tab" aria-selected="false" data-cmd="copilot -s --no-ask-user">Copilot CLI</button>
+              <button type="button" role="tab" aria-selected="false" data-cmd="gemini --output-format text">Gemini CLI</button>
+              <button type="button" role="tab" aria-selected="false" data-cmd="my-agent --read-only &lt; $PROMPT_FILE">Custom command</button>
+            </div>
+            <div class="cmd-line" aria-live="polite">
+              <span class="cmd-prompt">$</span>
+              <code id="agent-cmd">claude -p --output-format text</code>
+              <span class="cmd-badge"><i data-icon="eye" data-size="13"></i>read-only</span>
+            </div>
+          </div>
+
+          <div class="agent-demos">
+            <!-- Conflict resolution -->
+            <article class="demo conflict-demo" id="conflict-demo" data-reveal>
+              <header class="demo-head">
+                <div>
+                  <h3><i data-icon="sparkle" data-size="20"></i>Resolve conflicts with AI</h3>
+                  <p>The agent reads the base, ours and theirs, then proposes the whole resolved file with its reasoning. Nothing touches disk until you press Save.</p>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm replay" id="conflict-replay"><i data-icon="refresh" data-size="14"></i>Replay</button>
+              </header>
+              <div class="app-window cf-window" aria-hidden="true">
+                <div class="cf-banner">
+                  <span><i data-icon="merge" data-size="15"></i><b>Merge in progress</b> · 1 conflicted file</span>
+                  <span class="cf-file"><i data-icon="warning" data-size="14"></i>src/launch/countdown.ts</span>
+                </div>
+                <div class="cf-actions">
+                  <span class="cf-btn ai" id="cf-ai"><i data-icon="sparkle" data-size="14"></i>Resolve with AI</span>
+                  <span class="cf-btn">Take all ours</span>
+                  <span class="cf-btn">Take all theirs</span>
+                  <span class="cf-btn save" id="cf-save"><i data-icon="check" data-size="14"></i>Save and mark resolved</span>
+                </div>
+                <div class="cf-panes">
+                  <div class="cf-pane ours">
+                    <div class="cf-label">Ours <small>main</small></div>
+                    <pre id="cf-ours"></pre>
+                  </div>
+                  <div class="cf-pane theirs">
+                    <div class="cf-label">Theirs <small>feature/telemetry</small></div>
+                    <pre id="cf-theirs"></pre>
+                  </div>
+                </div>
+                <div class="cf-proposal" id="cf-proposal">
+                  <img class="spin" src="./src/assets/brand/space-spinner-mini.svg" width="18" height="18" alt="" />
+                  <p><b id="cf-agent-name">Claude Code's</b> proposal: <span id="cf-reason"></span></p>
+                </div>
+                <div class="cf-pane output">
+                  <div class="cf-label">Output <small>editable</small></div>
+                  <pre id="cf-output"></pre>
+                </div>
+                <div class="cf-you" id="cf-you"><i data-icon="users" data-size="14"></i>Your move: review it, edit if needed, then save.</div>
+              </div>
+            </article>
+
+            <!-- Explain change -->
+            <article class="demo explain-demo" id="explain-demo" data-reveal="1">
+              <header class="demo-head">
+                <div>
+                  <h3><i data-icon="sparkle" data-size="20"></i>Explain any commit</h3>
+                  <p>Ask what a commit changes and what that does. The answer streams into the commit's details as it's written.</p>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm replay" id="explain-replay"><i data-icon="refresh" data-size="14"></i>Replay</button>
+              </header>
+              <div class="app-window ex-window" aria-hidden="true">
+                <div class="ex-commit">
+                  <h4>Retry the handshake on timeout</h4>
+                  <span class="ref-pill" style="--pill: var(--lane-2)"><i data-icon="branch" data-size="12"></i>feature/docking</span>
+                  <div class="ex-author"><span class="avatar">ML</span><div><b>Mika Lund</b><small>authored 6 days ago</small></div></div>
+                  <div class="ex-sha"><code>c5cc477</code><span>parent: <code>9b1e2a4</code></span></div>
+                </div>
+                <div class="ex-card">
+                  <div class="ex-card-head">
+                    <span><i data-icon="sparkle" data-size="14"></i><b id="ex-agent-name">Claude Code</b> on this change</span>
+                    <span class="ex-icons"><i data-icon="copy" data-size="14"></i><i data-icon="refresh" data-size="14"></i></span>
+                  </div>
+                  <div class="ex-text" id="ex-text"></div>
+                </div>
+                <div class="ex-files">
+                  <b>2 changed files</b>
+                  <div><span class="fs m">M</span>docking/handshake.ts<span class="stat">+18 −4</span></div>
+                  <div><span class="fs a">A</span>docking/errors.ts<span class="stat">+9</span></div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <ul class="promise-row">
+            <li data-reveal><i data-icon="eye" data-size="20"></i><b>Read-only by default</b><span>Every preset runs the agent in a mode that can't edit your files.</span></li>
+            <li data-reveal="1"><i data-icon="check" data-size="20"></i><b>You review first</b><span>Proposals land in an editable output. Discard, tweak, or ask again.</span></li>
+            <li data-reveal="2"><i data-icon="key" data-size="20"></i><b>Your sign-in</b><span>The agent talks to its own provider, exactly as it does in your terminal.</span></li>
+            <li data-reveal="3"><i data-icon="terminal" data-size="20"></i><b>Any command works</b><span>If it reads a prompt and prints an answer, Rookery can use it.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ MORE FEATURES ============ -->
+      <section class="scene features" id="features" tabindex="-1" aria-labelledby="ft-title">
+        <div class="container">
+          <div class="scene-head center">
+            <p class="eyebrow" data-reveal>The rest of the toolkit</p>
+            <h2 class="h2" id="ft-title" data-reveal="1">Everything you'd expect.<br />Some things you wouldn't.</h2>
+          </div>
+          <ul class="bento">
+            <li class="tile tile-sub" data-tilt="6" data-reveal>
+              <div class="tile-inner">
+                <div class="tile-text">
+                  <i data-icon="layers" data-size="26" class="tile-icon"></i>
+                  <h3>Submodule sync</h3>
+                  <p>Create, check out, merge, push, pull and rebase carry through every submodule. Merges go submodule-first and the parent's pointers resolve to the results. Every step is previewed, journaled, and can be rolled back.</p>
+                </div>
+                <svg class="sub-diagram" id="sub-diagram" viewBox="0 0 300 200" aria-hidden="true"></svg>
+              </div>
+            </li>
+            <li class="tile" data-tilt="8" data-reveal="1" style="--t: var(--lane-1)"><div class="tile-inner"><i data-icon="reorder" data-size="24" class="tile-icon"></i><h3>Interactive rebase</h3><p>Pick, reword, squash, fixup and drop. Drag to reorder, and undo it all.</p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="2" style="--t: var(--lane-0)"><div class="tile-inner"><i data-icon="anchor" data-size="24" class="tile-icon"></i><h3>The Harbor</h3><p>Every repository you have, including ones it finds in your folders. <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd></p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="1" style="--t: var(--lane-5)"><div class="tile-inner"><i data-icon="worktree" data-size="24" class="tile-icon"></i><h3>Worktrees</h3><p>Create, lock and prune worktrees, and open each in its own tab.</p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="2" style="--t: var(--lane-4)"><div class="tile-inner"><i data-icon="box" data-size="24" class="tile-icon"></i><h3>Git LFS &amp; Git Flow</h3><p>Track, lock and prune LFS files. Start and finish features, releases and hotfixes.</p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="3" style="--t: var(--lane-6)"><div class="tile-inner"><i data-icon="image" data-size="24" class="tile-icon"></i><h3>Image diffs</h3><p>Side by side, swipe and onion skin, for PNG, JPEG, WebP, SVG and more.</p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="1" style="--t: var(--lane-7)"><div class="tile-inner"><i data-icon="terminal" data-size="24" class="tile-icon"></i><h3>Built-in terminal</h3><p>Docked below or beside the graph, with git completions for branches, files and flags.</p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="2" style="--t: var(--lane-3)"><div class="tile-inner"><i data-icon="users" data-size="24" class="tile-icon"></i><h3>Profiles &amp; workspaces</h3><p>Separate identities and accounts per profile. Fetch or clone a whole group of repos at once.</p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="3" style="--t: var(--lane-2)"><div class="tile-inner"><i data-icon="keyboard" data-size="24" class="tile-icon"></i><h3>Your shortcuts</h3><p>Rebind any command. <kbd>Ctrl</kbd>+<kbd>/</kbd> shows them all.</p></div></li>
+            <li class="tile wide" data-tilt="6" data-reveal="1" style="--t: var(--lane-5)"><div class="tile-inner"><i data-icon="history" data-size="24" class="tile-icon"></i><h3>Undo that</h3><p>Checkouts, commits, discards, resets and branch changes can all be undone, even across submodules.</p></div></li>
+            <li class="tile wide" data-tilt="6" data-reveal="2" style="--t: var(--lane-7)"><div class="tile-inner"><i data-icon="external" data-size="24" class="tile-icon"></i><h3>Your diff and merge tools</h3><p>Hunk, inline and split diffs built in, blame with an age heatmap, and any external diff or merge tool one click away.</p></div></li>
+          </ul>
+
+          <ul class="truths">
+            <li data-reveal><b>Runs real git.</b> Every command goes through the git CLI, so hooks, signing, LFS and credential helpers behave exactly as they do in your terminal.</li>
+            <li data-reveal="1"><b>Never stores git credentials.</b> Git Credential Manager or ssh-agent handle them, and any prompt git raises is shown to you as it is.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ DOWNLOAD ============ -->
+      <section class="scene download" id="download" tabindex="-1" aria-labelledby="dl-title" data-parallax>
+        <div class="container">
+          <div class="dl-hero">
+            <div class="dl-mascot" data-speed="-0.15" aria-hidden="true">
+              <div class="launch-glow"></div>
+              <img id="dl-mascot-img" src="./src/assets/brand/space-mascot-eureka.svg" alt="" width="260" height="312" />
+              <div class="pad"></div>
+            </div>
+            <div class="scene-head dl-head">
+              <p class="eyebrow" data-reveal>Download</p>
+              <h2 class="h2" id="dl-title" data-reveal="1">Ready for launch.</h2>
+              <p class="lede" data-reveal="2">
+                Rookery runs on Windows, macOS and Linux. You'll need <b>Git 2.40 or newer</b> on your <code>PATH</code>,
+                or point Rookery at it in Preferences.
+              </p>
+              <p class="dl-status" id="dl-status" data-reveal="3" aria-live="polite">Checking for the latest release…</p>
+            </div>
+          </div>
+
+          <div class="os-cards" id="os-cards">
+            <article class="os-card" data-os="windows" data-reveal="1" data-tilt="5">
+              <div class="os-top"><i data-icon="windows" data-size="34" class="os-logo"></i><span class="os-yours">Your system</span></div>
+              <h3>Windows</h3>
+              <p class="os-req">Windows 10 or 11, 64-bit · Installer (.exe)</p>
+              <div class="os-actions"></div>
+            </article>
+            <article class="os-card" data-os="mac" data-reveal="2" data-tilt="5">
+              <div class="os-top"><i data-icon="apple" data-size="34" class="os-logo"></i><span class="os-yours">Your system</span></div>
+              <h3>macOS</h3>
+              <p class="os-req">Disk image (.dmg)</p>
+              <div class="os-actions"></div>
+            </article>
+            <article class="os-card" data-os="linux" data-reveal="3" data-tilt="5">
+              <div class="os-top"><i data-icon="linux" data-size="34" class="os-logo"></i><span class="os-yours">Your system</span></div>
+              <h3>Linux</h3>
+              <p class="os-req">AppImage, or a .deb for Debian and Ubuntu</p>
+              <div class="os-actions"></div>
+            </article>
+          </div>
+          <p class="dl-foot" id="dl-foot">
+            Every build is published on
+            <a href="https://github.com/Richcb5790/RookeryDesktop/releases" id="dl-releases-link">GitHub Releases</a>,
+            with notes on what changed.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer" data-parallax>
+      <div class="harbor" aria-hidden="true">
+        <svg class="harbor-svg" id="harbor-svg" viewBox="0 0 1200 220" preserveAspectRatio="xMidYMax slice"></svg>
+      </div>
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <img src="./src/assets/brand/space-icon-small.svg" width="40" height="40" alt="" />
+          <div>
+            <b>Rookery</b>
+            <span>See every branch's story, and keep your submodules in step.</span>
+          </div>
+        </div>
+        <nav class="footer-links" aria-label="Footer">
+          <a href="#graph">Commit graph</a>
+          <a href="#integrations">Integrations</a>
+          <a href="#isolate">Isolate</a>
+          <a href="#agents">AI agents</a>
+          <a href="#download">Download</a>
+          <a href="https://github.com/Richcb5790/RookeryDesktop/releases">Releases</a>
+        </nav>
+        <p class="copyright">© 2026 richc. GitHub, GitLab, Bitbucket, Azure DevOps, Jira and Trello are trademarks of their owners.</p>
+      </div>
+    </footer>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

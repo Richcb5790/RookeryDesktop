@@ -1,0 +1,417 @@
+/* ---------- Nav ---------- */
+
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: var(--nav-h);
+  transition:
+    background 0.35s,
+    border-color 0.35s,
+    backdrop-filter 0.35s;
+  border-bottom: 1px solid transparent;
+}
+
+.nav.scrolled {
+  background: rgba(14, 23, 52, 0.72);
+  border-bottom-color: rgba(46, 63, 114, 0.6);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 100%;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font: 700 21px/1 var(--font-display);
+  letter-spacing: -0.01em;
+  text-decoration: none !important;
+}
+
+.brand img {
+  border-radius: 9px;
+  box-shadow: 0 0 24px -4px rgba(156, 140, 255, 0.7);
+}
+
+.nav-links {
+  display: flex;
+  gap: 4px;
+  margin: 0 0 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-links a {
+  position: relative;
+  display: block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--text-2);
+  font-size: 14.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+
+.nav-links a:hover {
+  background: rgba(169, 160, 214, 0.1);
+  color: var(--text);
+}
+
+.nav-links a.active {
+  color: var(--text);
+}
+
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  transform: translateX(-50%);
+}
+
+.nav-cta {
+  margin-left: 8px;
+}
+
+@media (max-width: 900px) {
+  .nav-links {
+    display: none;
+  }
+  .nav-cta {
+    margin-left: auto;
+  }
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: calc(var(--nav-h) + 24px) 0 96px;
+  overflow: clip;
+}
+
+.hero-sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Fade the sky's layers out before the hero's edge clips them */
+  -webkit-mask-image: linear-gradient(#000 70%, transparent 98%);
+  mask-image: linear-gradient(#000 70%, transparent 98%);
+}
+
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.8;
+}
+
+.nebula.n1 {
+  top: -18%;
+  right: -12%;
+  width: 70vw;
+  height: 70vw;
+  max-width: 1100px;
+  max-height: 1100px;
+  background: radial-gradient(circle at 40% 40%, rgba(156, 140, 255, 0.45), rgba(74, 62, 158, 0.25) 40%, transparent 68%);
+}
+
+.nebula.n2 {
+  bottom: -30%;
+  left: -20%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(76, 201, 240, 0.16), rgba(76, 201, 240, 0.05) 45%, transparent 70%);
+}
+
+.planet {
+  position: absolute;
+  top: 9%;
+  right: 2.5%;
+  width: clamp(100px, 12vw, 190px);
+  height: auto;
+  filter: drop-shadow(0 0 40px rgba(156, 140, 255, 0.35));
+}
+
+.constellation-wrap {
+  position: absolute;
+  left: 54%;
+  top: 60%;
+  width: min(1300px, 130vw);
+  height: 760px;
+  margin: -380px 0 0 calc(min(1300px, 130vw) / -2);
+  perspective: 1100px;
+}
+
+.constellation {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0.8;
+  transform: rotateX(62deg) rotateZ(-28deg) translateY(-40px);
+  transform-origin: 50% 50%;
+}
+
+.constellation .g-edge {
+  fill: none;
+  stroke-width: 1.6;
+  stroke-opacity: 0.7;
+  stroke-linecap: round;
+}
+
+.constellation .g-edge.merge {
+  stroke-dasharray: 2 6;
+}
+
+.constellation .halo {
+  opacity: 0.16;
+}
+
+.hero-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-items: center;
+  gap: 32px;
+}
+
+.hero-eyebrow {
+  color: var(--text-2);
+  font-size: 12.5px;
+  letter-spacing: 0.14em;
+}
+
+.hero-eyebrow::before {
+  display: none;
+}
+
+.pulse-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid var(--success);
+  animation: ping 2.2s var(--ease-out) infinite;
+}
+
+@keyframes ping {
+  from {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  to {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.hero-title {
+  font-size: clamp(2.9rem, 6.1vw, 5.7rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.hero-title .line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+.hero-title .line > span {
+  display: inline-block;
+}
+
+.hero-sub {
+  max-width: 580px;
+  margin-top: 26px;
+  color: var(--text-2);
+  font-size: clamp(1.05rem, 1.45vw, 1.22rem);
+  line-height: 1.65;
+  opacity: 0.9;
+}
+
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 36px;
+}
+
+.hero-meta {
+  margin-top: 22px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.hero-mascot {
+  position: relative;
+  justify-self: center;
+  width: clamp(240px, 29vw, 430px);
+}
+
+.mascot-bob {
+  animation: bob 6s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(2deg);
+  }
+}
+
+.mascot svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 30px 50px rgba(4, 8, 22, 0.6));
+}
+
+/* The Professor's parts, animated in place (class names come from the brand SVG). */
+.mascot .atom {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: turn 4s linear infinite;
+}
+
+.mascot .beacon {
+  animation: blink 1.4s ease-in-out infinite alternate;
+}
+
+.mascot .signal {
+  animation: blink 1.8s ease-in-out infinite;
+}
+
+@keyframes turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mascot-shadow {
+  width: 46%;
+  height: 22px;
+  margin: 6px auto 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 138, 61, 0.55), rgba(255, 201, 60, 0.15) 60%, transparent);
+  filter: blur(6px);
+  animation: thrust 0.18s ease-in-out infinite alternate;
+}
+
+@keyframes thrust {
+  to {
+    opacity: 0.7;
+    transform: scaleX(0.92);
+  }
+}
+
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  width: 26px;
+  height: 42px;
+  margin-left: -13px;
+  border: 2px solid rgba(217, 223, 234, 0.4);
+  border-radius: 14px;
+}
+
+.scroll-cue span {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 4px;
+  height: 8px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--accent);
+  animation: cue 1.8s var(--ease-out) infinite;
+}
+
+@keyframes cue {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+  .hero-mascot {
+    position: absolute;
+    top: -40px;
+    right: -30px;
+    width: clamp(150px, 34vw, 240px);
+    opacity: 0.95;
+    z-index: -1;
+  }
+  .hero-copy {
+    padding-top: 150px;
+  }
+  .planet {
+    top: 15%;
+    right: auto;
+    left: -36px;
+    width: 92px;
+    opacity: 0.75;
+  }
+}
+
+:root[data-motion='reduce'] .mascot-bob,
+:root[data-motion='reduce'] .mascot *,
+:root[data-motion='reduce'] .mascot-shadow,
+:root[data-motion='reduce'] .scroll-cue span,
+:root[data-motion='reduce'] .pulse-dot::after {
+  animation: none !important;
+}

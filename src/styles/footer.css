@@ -1,0 +1,237 @@
+.footer {
+  position: relative;
+  margin-top: 40px;
+  overflow: clip;
+  background: linear-gradient(180deg, transparent, rgba(10, 16, 40, 0.9) 60%);
+}
+
+.harbor {
+  position: relative;
+  height: clamp(200px, 26vw, 340px);
+}
+
+.harbor-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Ported from the app's Harbor banner (HarborScene.tsx) */
+.hs-star {
+  fill: var(--text-2);
+  opacity: 0.7;
+}
+
+.hs-twinkle {
+  animation: hs-twinkle 4s ease-in-out infinite;
+}
+
+.hs-planet circle {
+  fill: color-mix(in srgb, var(--purple) 38%, var(--surface));
+}
+
+.hs-planet ellipse {
+  fill: none;
+  stroke: var(--purple);
+  stroke-width: 1.5;
+  opacity: 0.75;
+}
+
+.hs-beam {
+  transform-box: view-box;
+  transform-origin: 820px 70px;
+  animation: hs-sweep 10s ease-in-out infinite alternate;
+}
+
+.hs-water line {
+  stroke: var(--info);
+  stroke-opacity: 0.24;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-dasharray: 26 14;
+  animation: hs-shimmer 7s linear infinite;
+}
+
+.hs-reflection line {
+  stroke: var(--text-2);
+  stroke-opacity: 0.35;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.hs-lamp-reflection line {
+  stroke: var(--accent);
+  stroke-opacity: 0.5;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  animation: hs-pulse 4s ease-in-out infinite;
+}
+
+.hs-pier rect {
+  fill: var(--surface-3);
+}
+
+.hs-deck {
+  fill: var(--border);
+}
+
+.hs-bollards rect {
+  fill: var(--faint);
+}
+
+.hs-rope {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 1.2;
+}
+
+.hs-tower {
+  fill: var(--surface-3);
+  stroke: var(--border);
+}
+
+.hs-band {
+  fill: color-mix(in srgb, var(--purple) 55%, var(--surface-3));
+}
+
+.hs-gallery {
+  fill: var(--border);
+}
+
+.hs-glow {
+  animation: hs-pulse 4s ease-in-out infinite;
+}
+
+.hs-lantern {
+  fill: var(--accent);
+}
+
+.hs-roof {
+  fill: var(--purple);
+}
+
+.hs-rocket-body {
+  fill: color-mix(in srgb, var(--text) 80%, var(--bg));
+}
+
+.hs-rocket-nose {
+  fill: var(--info);
+}
+
+.hs-rocket-fin {
+  fill: var(--purple);
+}
+
+.hs-rocket-window {
+  fill: var(--bg);
+  stroke: var(--info);
+  stroke-width: 1.5;
+}
+
+.hs-flame {
+  fill: var(--warn);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+}
+
+@keyframes hs-sweep {
+  from {
+    transform: rotate(-7deg);
+  }
+  to {
+    transform: rotate(9deg);
+  }
+}
+
+@keyframes hs-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes hs-shimmer {
+  to {
+    stroke-dashoffset: -80;
+  }
+}
+
+@keyframes hs-pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.footer-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px 40px;
+  align-items: center;
+  padding-top: 32px;
+  padding-bottom: 40px;
+  border-top: 1px solid rgba(46, 63, 114, 0.5);
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer-brand img {
+  border-radius: 10px;
+}
+
+.footer-brand b {
+  display: block;
+  color: var(--text);
+  font: 700 18px var(--font-display);
+}
+
+.footer-brand span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+}
+
+.footer-links a {
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+.copyright {
+  grid-column: 1 / -1;
+  color: var(--faint);
+  font-size: 13px;
+}
+
+@media (max-width: 767px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+:root[data-motion='reduce'] .hs-beam,
+:root[data-motion='reduce'] .hs-twinkle,
+:root[data-motion='reduce'] .hs-water line,
+:root[data-motion='reduce'] .hs-glow,
+:root[data-motion='reduce'] .hs-lamp-reflection line {
+  animation: none;
+}

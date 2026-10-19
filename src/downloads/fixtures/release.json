@@ -1,0 +1,15 @@
+{
+  "tag_name": "v0.1.0",
+  "name": "Rookery 0.1.0",
+  "html_url": "https://github.com/Richcb5790/RookeryDesktop/releases/tag/v0.1.0",
+  "published_at": "2026-10-18T04:00:47Z",
+  "assets": [
+    { "name": "Rookery-Setup-0.1.0.exe", "browser_download_url": "https://github.com/Richcb5790/RookeryDesktop/releases/download/v0.1.0/Rookery-Setup-0.1.0.exe", "size": 117102564 },
+    { "name": "Rookery-Setup-0.1.0.exe.blockmap", "browser_download_url": "https://github.com/Richcb5790/RookeryDesktop/releases/download/v0.1.0/Rookery-Setup-0.1.0.exe.blockmap", "size": 122477 },
+    { "name": "latest.yml", "browser_download_url": "https://github.com/Richcb5790/RookeryDesktop/releases/download/v0.1.0/latest.yml", "size": 343 },
+    { "name": "Rookery-0.1.0-arm64.dmg", "browser_download_url": "https://github.com/Richcb5790/RookeryDesktop/releases/download/v0.1.0/Rookery-0.1.0-arm64.dmg", "size": 124518400 },
+    { "name": "Rookery-0.1.0.dmg", "browser_download_url": "https://github.com/Richcb5790/RookeryDesktop/releases/download/v0.1.0/Rookery-0.1.0.dmg", "size": 129761280 },
+    { "name": "Rookery-0.1.0.AppImage", "browser_download_url": "https://github.com/Richcb5790/RookeryDesktop/releases/download/v0.1.0/Rookery-0.1.0.AppImage", "size": 131072000 },
+    { "name": "rookery_0.1.0_amd64.deb", "browser_download_url": "https://github.com/Richcb5790/RookeryDesktop/releases/download/v0.1.0/rookery_0.1.0_amd64.deb", "size": 89128960 }
+  ]
+}

@@ -1,0 +1,455 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* The page's sky lives on the root, so the fixed starfield canvas (z-index -1) paints above it. */
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--nav-h) + 12px);
+  background:
+    radial-gradient(120% 900px at 70% 0%, rgba(74, 62, 158, 0.55), transparent 60%) no-repeat,
+    linear-gradient(180deg, #1a1a4a 0, var(--bg) 900px) no-repeat,
+    var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--info);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+code,
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+}
+
+kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+::selection {
+  background: rgba(255, 201, 60, 0.35);
+  color: var(--text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  transform: translateY(-160%);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.skip:focus {
+  transform: none;
+}
+
+/* ---------- Starfield + grain ---------- */
+
+#starfield {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+body::after {
+  /* A whisper of film grain keeps the big gradients from banding. */
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Layout ---------- */
+
+.container {
+  width: 100%;
+  max-width: calc(var(--maxw) + var(--gutter) * 2);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.scene {
+  position: relative;
+  padding: clamp(96px, 14vh, 160px) 0;
+}
+
+.scene-head {
+  max-width: 720px;
+  margin-bottom: clamp(40px, 6vw, 72px);
+}
+
+.scene-head.center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.scene-head.center .eyebrow::after {
+  content: '';
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.h2 {
+  font-size: clamp(2.1rem, 4.6vw, 3.6rem);
+}
+
+.lede {
+  margin-top: 20px;
+  color: var(--text-2);
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  line-height: 1.65;
+  opacity: 0.88;
+}
+
+.grad-text {
+  background: linear-gradient(100deg, var(--text) 10%, #c9c2ff 45%, var(--info) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.accent-text {
+  color: var(--accent);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  --btn-bg: var(--surface-2);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--text);
+  font: 600 15px/1 var(--font-body);
+  cursor: pointer;
+  text-decoration: none !important;
+  white-space: nowrap;
+  transition:
+    transform 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out),
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.btn svg {
+  flex: none;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--purple);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-primary {
+  --btn-bg: var(--accent);
+  border-color: transparent;
+  color: var(--accent-ink);
+  box-shadow: 0 10px 30px -10px rgba(255, 201, 60, 0.7);
+}
+
+.btn-primary:hover {
+  border-color: transparent;
+  box-shadow: var(--glow-accent);
+}
+
+.btn-ghost {
+  --btn-bg: rgba(19, 32, 63, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.btn-sm {
+  min-height: 38px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+.btn[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: default;
+  transform: none;
+}
+
+/* ---------- Glass + app window ---------- */
+
+.glass {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--glass);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 30px 80px -30px var(--shadow);
+}
+
+.app-window {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 50px 120px -40px rgba(3, 6, 20, 0.9),
+    0 0 120px -50px rgba(156, 140, 255, 0.55);
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+.aw-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg);
+}
+
+.aw-logo {
+  width: 22px;
+  height: 22px;
+  margin: 0 4px 9px 0;
+  border-radius: 6px;
+}
+
+.aw-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--border-soft);
+  border-bottom: 0;
+  border-top: 2px solid var(--accent);
+  border-radius: 8px 8px 0 0;
+  background: var(--bg-elev);
+  color: var(--text);
+  font-size: 12.5px;
+}
+
+.aw-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 52px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-elev);
+}
+
+.aw-crumb {
+  display: grid;
+  margin-right: 18px;
+  line-height: 1.25;
+}
+
+.aw-crumb small {
+  color: var(--muted);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.aw-crumb b {
+  color: var(--text);
+  font-size: 12.5px;
+}
+
+.aw-tools {
+  display: flex;
+  gap: 2px;
+  margin: 0 auto;
+}
+
+.aw-tool {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-width: 46px;
+  padding: 5px 6px;
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: 10.5px;
+}
+
+.aw-tool svg {
+  width: 17px;
+  height: 17px;
+}
+
+.aw-tool.on {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+.aw-tool.glow {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(255, 201, 60, 0.4);
+}
+
+/* Branch label pills, as in the graph's Branch / Tag column */
+.ref-pill {
+  --pill: var(--lane-0);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 9px;
+  border: 1px solid var(--pill);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--pill) 16%, var(--bg));
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ref-pill.head {
+  background: var(--pill);
+  color: var(--accent-ink);
+}
+
+.ref-pill svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ---------- Reveal-on-scroll ---------- */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+:root[data-motion='reduce'] [data-reveal],
+:root:not(.js) [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 767px) {
+  body {
+    font-size: 16px;
+  }
+}
