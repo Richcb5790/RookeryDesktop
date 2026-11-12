@@ -68,14 +68,29 @@ describe('loadRelease', () => {
     expect(await loadRelease({ url, fetch: respond(200, [pre]) })).toEqual({ kind: 'none' })
   })
 
-  it('reports no release when the repository answers 404, and caches that', async () => {
+  it('reports no release when the repository answers 404', async () => {
+    expect(await loadRelease({ url, fetch: respond(404) })).toEqual({ kind: 'none' })
+  })
+
+  it("doesn't cache 'none yet', so a release published a moment later shows on the next load", async () => {
     const storage = new MemoryStorage() as unknown as Storage
-    expect(await loadRelease({ url, fetch: respond(404), storage, now: 0 })).toEqual({ kind: 'none' })
-    // A second call inside the cache window doesn't fetch.
+    expect(await loadRelease({ url, fetch: respond(200, []), storage, now: 0 })).toEqual({ kind: 'none' })
+    expect((await loadRelease({ url, fetch: respond(200, [fixture]), storage, now: 1000 })).kind).toBe('available')
+  })
+
+  it("ignores a 'none' left in the cache by an older version of the page", async () => {
+    const storage = new MemoryStorage() as unknown as Storage
+    storage.setItem('rookery.release.v1', JSON.stringify({ at: 0, state: { kind: 'none' } }))
+    expect((await loadRelease({ url, fetch: respond(200, [fixture]), storage, now: 1000 })).kind).toBe('available')
+  })
+
+  it('reuses a found release inside the cache window', async () => {
+    const storage = new MemoryStorage() as unknown as Storage
+    await loadRelease({ url, fetch: respond(200, [fixture]), storage, now: 0 })
     const boom = async (): Promise<Response> => {
       throw new Error('should not fetch')
     }
-    expect(await loadRelease({ url, fetch: boom, storage, now: 1000 })).toEqual({ kind: 'none' })
+    expect((await loadRelease({ url, fetch: boom, storage, now: 1000 })).kind).toBe('available')
   })
 
   it('returns the release and its downloads', async () => {
@@ -99,8 +114,10 @@ describe('loadRelease', () => {
 
   it('fetches again once the cache is stale', async () => {
     const storage = new MemoryStorage() as unknown as Storage
-    await loadRelease({ url, fetch: respond(404), storage, now: 0, ttlMs: 100 })
-    expect((await loadRelease({ url, fetch: respond(200, [fixture]), storage, now: 500, ttlMs: 100 })).kind).toBe('available')
+    await loadRelease({ url, fetch: respond(200, [fixture]), storage, now: 0, ttlMs: 100 })
+    const newer = { ...fixture, tag_name: 'v0.2.0' }
+    const s = await loadRelease({ url, fetch: respond(200, [newer, fixture]), storage, now: 500, ttlMs: 100 })
+    expect(s.kind === 'available' && s.version).toBe('0.2.0')
   })
 })
 

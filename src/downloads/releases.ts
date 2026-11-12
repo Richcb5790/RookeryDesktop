@@ -101,7 +101,8 @@ function readCache(storage: Storage | null, now: number, ttl: number): ReleaseSt
     const raw = storage?.getItem(CACHE_KEY)
     if (!raw) return null
     const c = JSON.parse(raw) as Cached
-    return now - c.at < ttl ? c.state : null
+    // Only a found release is reused: "none yet" must never outlive the moment a release is published.
+    return c.state.kind === 'available' && now - c.at < ttl ? c.state : null
   } catch {
     return null
   }
@@ -126,7 +127,8 @@ export interface LoadOptions {
 
 /**
  * Asks GitHub for the repository's releases and takes the newest that is neither a draft nor a
- * prerelease. Answers (including "none yet") are cached; failures aren't.
+ * prerelease. A found release is cached for the session; "none yet" and failures aren't, so a
+ * newly published release shows up on the next page load.
  */
 export async function loadRelease(o: LoadOptions): Promise<ReleaseState> {
   const now = o.now ?? Date.now()
@@ -140,11 +142,7 @@ export async function loadRelease(o: LoadOptions): Promise<ReleaseState> {
   } catch {
     return { kind: 'error', reason: 'network' }
   }
-  if (res.status === 404) {
-    const state: ReleaseState = { kind: 'none' }
-    writeCache(storage, now, state)
-    return state
-  }
+  if (res.status === 404) return { kind: 'none' }
   if (res.status === 403 || res.status === 429) return { kind: 'error', reason: 'rate-limited' }
   if (!res.ok) return { kind: 'error', reason: `http ${res.status}` }
   let list: GithubRelease[]
@@ -155,7 +153,8 @@ export async function loadRelease(o: LoadOptions): Promise<ReleaseState> {
     return { kind: 'error', reason: 'bad response' }
   }
   const latest = list.find((r) => !r.draft && !r.prerelease)
-  const state: ReleaseState = latest ? toState(latest) : { kind: 'none' }
+  if (!latest) return { kind: 'none' }
+  const state = toState(latest)
   writeCache(storage, now, state)
   return state
 }
