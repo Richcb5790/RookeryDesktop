@@ -72,7 +72,7 @@ export function initGraph(reduced: boolean): void {
   win.style.setProperty('--row-h', `${m.rowH}px`)
   svg.setAttribute('width', '96')
   svg.setAttribute('height', String(TOUR.length * m.rowH))
-  renderGraph(svg, TOUR, m)
+  renderGraph(svg, TOUR, m, { bands: 96 })
   renderRows(rows, TOUR)
   hoverLanes(body, svg, tip, TOUR, SHAS)
 
@@ -95,12 +95,14 @@ export function initGraph(reduced: boolean): void {
 
   primeEdges(svg, true)
   gsap.set(svg.querySelectorAll('.g-node'), { scale: 0, transformOrigin: '50% 50%' })
+  gsap.set(svg.querySelectorAll('.g-band'), { opacity: 0 })
   gsap.set(rows.querySelectorAll('.g-row'), { opacity: 0, x: 18 })
 
   const appear = (tl: gsap.core.Timeline, c: Commit, at: number): void => {
     const edges = edgesOf(c.id)
     if (edges.length) tl.to(edges, { strokeDashoffset: 0, duration: 0.9, ease: 'power1.inOut' }, at)
     tl.to(node(c.id), { scale: 1, duration: 0.5, ease: 'back.out(2.6)' }, at + 0.55)
+    tl.to(svg.querySelector(`.g-band[data-id="${c.id}"]`), { opacity: 1, duration: 0.6, ease: 'power2.out' }, at + 0.7)
     tl.to(row(c.id), { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out' }, at + 0.55)
   }
 

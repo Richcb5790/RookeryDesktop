@@ -35,6 +35,11 @@
 
 .tile:hover {
   border-color: color-mix(in srgb, var(--t) 50%, var(--border));
+  box-shadow: 0 30px 70px -40px var(--t);
+}
+
+.tile:hover .tile-icon {
+  box-shadow: 0 0 30px -4px var(--t);
 }
 
 .tile::before {
@@ -64,6 +69,7 @@
   border-radius: 13px;
   background: color-mix(in srgb, var(--t) 16%, var(--surface-3));
   color: var(--t);
+  transition: box-shadow 0.4s;
 }
 
 .tile h3 {
@@ -142,31 +148,67 @@
   font: 800 9px var(--font-body);
 }
 
-.truths {
+/* ---------- Rookery in numbers ---------- */
+
+.stats {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin: 28px 0 0;
-  padding: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 22px 0 0;
+  padding: 30px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(110deg, rgba(74, 62, 158, 0.3), rgba(17, 28, 61, 0.5) 45%, rgba(76, 201, 240, 0.1));
   list-style: none;
 }
 
-.truths li {
-  padding: 18px 22px;
-  border-left: 3px solid var(--success);
-  border-radius: 4px 14px 14px 4px;
-  background: rgba(110, 231, 183, 0.05);
-  color: var(--text-2);
-  font-size: 0.95rem;
+.stats li {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 4px 22px;
+  border-left: 1px solid var(--border-soft);
 }
 
-.truths b {
-  color: var(--text);
+.stats li:first-child {
+  border-left: 0;
+}
+
+.stats b {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  background: linear-gradient(120deg, var(--text) 20%, #c9c2ff 60%, var(--info));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font: 700 clamp(2.6rem, 4.6vw, 3.8rem) / 1 var(--font-display);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats b small {
+  color: var(--accent);
+  font-size: 0.42em;
+  letter-spacing: 0;
+}
+
+.stats li > span {
+  color: var(--text-2);
+  font-size: 0.93rem;
+  line-height: 1.5;
+  opacity: 0.82;
 }
 
 @media (max-width: 1000px) {
   .bento {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 26px;
+  }
+  .stats li:nth-child(3) {
+    border-left: 0;
   }
 }
 
@@ -179,8 +221,17 @@
     grid-column: auto;
     grid-row: auto;
   }
-  .truths {
+  .stats {
     grid-template-columns: 1fr;
+    padding: 12px;
+  }
+  .stats li {
+    padding: 18px 12px;
+    border-top: 1px solid var(--border-soft);
+    border-left: 0;
+  }
+  .stats li:first-child {
+    border-top: 0;
   }
   .tile {
     min-height: 0;

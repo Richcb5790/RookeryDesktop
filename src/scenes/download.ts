@@ -36,13 +36,15 @@ export function initDownload(reduced: boolean): void {
   const heroBtn = document.getElementById('hero-download') as HTMLAnchorElement
   const heroMeta = document.getElementById('hero-meta')!
   const mascot = document.getElementById('dl-mascot-img')!
+  const heroVersion = document.getElementById('hero-version')
+  const heroLabel = heroBtn.querySelector('span')!
 
   const mine = os === 'windows' || os === 'mac' || os === 'linux' ? os : null
   for (const card of cards) {
     card.classList.toggle('mine', card.dataset.os === mine)
     card.querySelector('.os-actions')!.innerHTML = '<div class="skeleton"></div>'
   }
-  if (mine) heroBtn.querySelector('span')!.textContent = `Download for ${OS_NAMES[mine]}`
+  if (mine) heroLabel.textContent = `Download for ${OS_NAMES[mine]}`
   if (os === 'mobile') status.textContent = 'Rookery is a desktop app. Open this page on your computer to download it.'
 
   const launch = (): void => {
@@ -63,7 +65,13 @@ export function initDownload(reduced: boolean): void {
     } else if (state.kind === 'error') {
       status.textContent = "Couldn't reach GitHub just now. The installers are on the Releases page."
     }
-    if (os === 'mobile' && state.kind !== 'loading') status.textContent += ' Rookery runs on Windows, macOS and Linux.'
+    if (os === 'mobile' && state.kind !== 'loading') status.textContent += ' Rookery runs on Windows and Linux.'
+
+    if (state.kind === 'available') {
+      // The page's own mentions of the version (the hero badge, the verify-your-download terminal).
+      if (heroVersion) heroVersion.textContent = `v${state.version}`
+      document.querySelectorAll('[data-version]').forEach((el) => (el.textContent = state.version))
+    }
 
     for (const card of cards) {
       const key = card.dataset.os as DesktopOs
@@ -86,6 +94,8 @@ export function initDownload(reduced: boolean): void {
 
     // The hero button goes straight to the installer when there is one for this computer.
     const file = mine && state.kind === 'available' ? state.downloads[mine][0] : undefined
+    // A release with nothing for this computer (macOS, for now): don't promise a download for it.
+    if (mine && state.kind === 'available' && !file) heroLabel.textContent = 'Download Rookery'
     if (file) {
       heroBtn.href = file.url
       heroBtn.setAttribute('download', '')

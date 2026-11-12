@@ -1,8 +1,10 @@
+import { esc, line, lines } from '../lib/code'
 import { icon } from '../lib/icons'
 import { gsap, ScrollTrigger } from '../lib/scroll'
 
-// Local agents: pick an agent (the command line and the demos follow), watch it resolve a conflict
-// and explain a commit. Both demos play when they come into view, and Replay runs them again.
+// Local agents: pick an agent (the command line and the demos follow), watch it resolve a conflict,
+// explain a commit and write a commit message. Each demo plays when it comes into view, and Replay
+// runs it again.
 
 const OURS = ['export function countdown(seconds: number) {', '  const clamped = Math.max(0, seconds)', '  return formatTime(clamped)', '}']
 const THEIRS = ['export function countdown(seconds: number) {', "  telemetry.track('countdown', seconds)", '  return formatTime(seconds)', '}']
@@ -38,6 +40,9 @@ const EXPLANATION: [tag: 'h5' | 'p' | 'li', text: string][] = [
   ['p', 'A station that is slow rather than gone now takes up to 14 seconds to fail, so the docking screen should show progress while it waits.']
 ]
 
+const SUMMARY = 'Retry the docking handshake on timeout'
+const BODY = 'The station sometimes answers late. Retry up to three times with backoff, and throw HandshakeTimeout after the last attempt.'
+
 const AGENT_NAMES: Record<string, string> = {
   'Claude Code': 'Claude Code',
   Codex: 'Codex',
@@ -45,21 +50,6 @@ const AGENT_NAMES: Record<string, string> = {
   'Gemini CLI': 'Gemini CLI',
   'Custom command': 'my-agent'
 }
-
-const esc = (s: string): string => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-
-/** Just enough TypeScript highlighting for the demo. */
-function hl(src: string): string {
-  if (/^(<{7}|={7}|>{7})/.test(src)) return esc(src)
-  return src.replace(
-    /('[^']*')|\b(export|function|const|return)\b|\b(number)\b|\b(\d+)\b|\b([A-Za-z_]\w*)(?=\()/g,
-    (_m, s: string, k: string, t: string, n: string, f: string) =>
-      s ? `<span class="tk-s">${esc(s)}</span>` : k ? `<span class="tk-k">${k}</span>` : t ? `<span class="tk-t">${t}</span>` : n ? `<span class="tk-n">${n}</span>` : `<span class="tk-f">${f}</span>`
-  )
-}
-
-const line = (n: number, text: string, cls = ''): string => `<span class="ln ${cls}"><i>${n}</i><span>${hl(text)}</span></span>`
-const lines = (rows: [string, string][]): string => rows.map(([t, cls], i) => line(i + 1, t, cls)).join('')
 
 function inlineCode(text: string): string {
   return esc(text).replace(/`([^`]+)`/g, '<code>$1</code>')
@@ -91,6 +81,7 @@ export function initAgents(reduced: boolean): void {
   const cmd = document.getElementById('agent-cmd')!
   const cfName = document.getElementById('cf-agent-name')!
   const exName = document.getElementById('ex-agent-name')!
+  const cmName = document.getElementById('cm-agent-name')!
 
   // ---- Agent picker (a tab list: arrow keys move between agents)
   let typing: gsap.core.Tween | null = null
@@ -104,6 +95,7 @@ export function initAgents(reduced: boolean): void {
     const name = AGENT_NAMES[chip.textContent!.trim()] ?? 'Your agent'
     cfName.textContent = `${name}'s`
     exName.textContent = name
+    cmName.textContent = name
     const full = chip.dataset.cmd!
     typing?.kill()
     if (reduced) {
@@ -215,8 +207,60 @@ export function initAgents(reduced: boolean): void {
     return tl
   }
 
+  // ---- Commit message demo
+  const summary = document.getElementById('cm-summary')!
+  const body = document.getElementById('cm-body')!
+  const count = document.getElementById('cm-count')!
+  const writeBtn = document.getElementById('cm-ai')!
+  const note = document.getElementById('cm-note')!
+  const commit = document.getElementById('cm-commit')!
+  const form = summary.closest<HTMLElement>('.cm-form')!
+
+  const messageFinal = (): void => {
+    summary.textContent = SUMMARY
+    body.textContent = BODY
+    count.textContent = String(SUMMARY.length)
+    note.classList.add('on')
+    commit.classList.add('ready')
+  }
+
+  const playMessage = (): gsap.core.Timeline => {
+    summary.textContent = ''
+    body.textContent = ''
+    count.textContent = '0'
+    note.classList.remove('on')
+    commit.classList.remove('ready')
+    const tl = gsap.timeline()
+    const s1 = { n: 0 }
+    const s2 = { n: 0 }
+    tl.to(writeBtn, { scale: 0.92, duration: 0.12, yoyo: true, repeat: 1, transformOrigin: '50% 50%' }, 0.5)
+    tl.call(() => form.classList.add('writing'), undefined, 0.6)
+    tl.to(
+      s1,
+      {
+        n: SUMMARY.length,
+        duration: 1.1,
+        ease: 'none',
+        onUpdate: () => {
+          const n = Math.round(s1.n)
+          summary.textContent = SUMMARY.slice(0, n)
+          count.textContent = String(n)
+        }
+      },
+      1.1
+    )
+    tl.to(s2, { n: BODY.length, duration: 2, ease: 'none', onUpdate: () => (body.textContent = BODY.slice(0, Math.round(s2.n))) }, 2.3)
+    tl.call(() => {
+      form.classList.remove('writing')
+      note.classList.add('on')
+      commit.classList.add('ready')
+    })
+    return tl
+  }
+
   if (reduced) {
     conflictFinal()
+    messageFinal()
     text.innerHTML = explanationHtml()
     text.querySelectorAll<HTMLElement>('.w').forEach((w) => (w.style.opacity = '1'))
     return
@@ -226,8 +270,15 @@ export function initAgents(reduced: boolean): void {
   text.innerHTML = explanationHtml()
   let cf: gsap.core.Timeline | null = null
   let ex: gsap.core.Timeline | null = null
+  let cm: gsap.core.Timeline | null = null
   ScrollTrigger.create({ trigger: '#conflict-demo', start: 'top 65%', once: true, onEnter: () => (cf = playConflict()) })
   ScrollTrigger.create({ trigger: '#explain-demo', start: 'top 65%', once: true, onEnter: () => (ex = playExplain()) })
+  ScrollTrigger.create({ trigger: '#message-demo', start: 'top 70%', once: true, onEnter: () => (cm = playMessage()) })
+  document.getElementById('message-replay')!.addEventListener('click', () => {
+    cm?.kill()
+    form.classList.remove('writing')
+    cm = playMessage()
+  })
   document.getElementById('conflict-replay')!.addEventListener('click', () => {
     cf?.kill()
     cf = playConflict()

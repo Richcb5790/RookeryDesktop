@@ -208,7 +208,9 @@
 .footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 22px;
+  justify-content: flex-end;
+  gap: 8px 22px;
+  max-width: 560px;
 }
 
 .footer-links a {
@@ -225,6 +227,9 @@
 @media (max-width: 767px) {
   .footer-inner {
     grid-template-columns: 1fr;
+  }
+  .footer-links {
+    justify-content: flex-start;
   }
 }
 

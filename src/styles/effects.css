@@ -1,0 +1,371 @@
+/* Page-wide effects: the aurora behind everything, the scroll progress line, the pointer's light,
+   button shine, rotating card edges, word-by-word headings and the ticker. Scene styles build on
+   these. Everything here stands still under reduced motion. */
+
+/* A typed angle, so conic gradients can turn smoothly. */
+@property --spin {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes spin {
+  to {
+    --spin: 360deg;
+  }
+}
+
+@keyframes turn-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Aurora: the sky's colour, cross-fading as sections come and go ---------- */
+
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.au {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 1.8s ease;
+  will-change: opacity, transform;
+  animation: drift 26s ease-in-out infinite alternate;
+}
+
+.au-violet {
+  top: -30%;
+  right: -18%;
+  width: 85vw;
+  height: 85vw;
+  background: radial-gradient(circle, rgba(124, 92, 255, 0.34), rgba(74, 62, 158, 0.14) 40%, transparent 68%);
+}
+
+.au-cyan {
+  top: 8%;
+  left: -28%;
+  width: 80vw;
+  height: 80vw;
+  background: radial-gradient(circle, rgba(76, 201, 240, 0.2), rgba(76, 201, 240, 0.06) 42%, transparent 68%);
+  animation-delay: -8s;
+}
+
+.au-gold {
+  right: -22%;
+  bottom: -38%;
+  width: 78vw;
+  height: 78vw;
+  background: radial-gradient(circle, rgba(255, 201, 60, 0.15), rgba(255, 138, 61, 0.06) 42%, transparent 68%);
+  animation-delay: -14s;
+}
+
+.au-green {
+  bottom: -34%;
+  left: -18%;
+  width: 74vw;
+  height: 74vw;
+  background: radial-gradient(circle, rgba(110, 231, 183, 0.14), rgba(76, 201, 240, 0.05) 42%, transparent 68%);
+  animation-delay: -20s;
+}
+
+/* Each sky lights its own colour fully and a neighbour faintly, so no two sections look alike. */
+:root:not([data-sky]) .au-violet,
+:root[data-sky='violet'] .au-violet,
+:root[data-sky='cyan'] .au-cyan,
+:root[data-sky='gold'] .au-gold,
+:root[data-sky='green'] .au-green {
+  opacity: 1;
+}
+
+:root[data-sky='violet'] .au-cyan,
+:root[data-sky='cyan'] .au-violet,
+:root[data-sky='gold'] .au-violet,
+:root[data-sky='green'] .au-cyan {
+  opacity: 0.45;
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0) scale(1.12);
+  }
+}
+
+/* ---------- Scroll progress ---------- */
+
+.progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  height: 3px;
+  pointer-events: none;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--lane-0), var(--lane-3) 35%, var(--lane-2) 65%, var(--lane-1));
+  box-shadow: 0 0 14px rgba(255, 201, 60, 0.55);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ---------- The pointer's light ---------- */
+
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 680px;
+  height: 680px;
+  margin: -340px 0 0 -340px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(156, 140, 255, 0.16), rgba(76, 201, 240, 0.06) 45%, transparent 72%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s;
+}
+
+.cursor-glow.on {
+  opacity: 1;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  /* The magnetic lean (lib/effects.ts) adds to the hover lift rather than replacing it. */
+  translate: var(--mag-x, 0px) var(--mag-y, 0px);
+}
+
+.btn-primary {
+  --btn-bg: linear-gradient(180deg, #ffdb70, var(--accent) 60%, #f5b91f);
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 36%, rgba(255, 255, 255, 0.6) 50%, transparent 64%);
+  pointer-events: none;
+  transform: translateX(-130%);
+  animation: shine 5s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0%,
+  58% {
+    transform: translateX(-130%);
+  }
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+/* ---------- Cards: a lane-coloured light runs round the edge on hover ---------- */
+
+.tile,
+.os-card,
+.trust-card,
+.log-card,
+.int-card {
+  --t: var(--accent);
+}
+
+.tile::after,
+.os-card::after,
+.trust-card::after,
+.log-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--spin), transparent 0 55%, var(--t) 78%, #fff 84%, var(--t) 90%, transparent 100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s;
+  animation: spin 3.6s linear infinite paused;
+  /* Only the padding ring shows: the fill is masked away. */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+}
+
+.tile:hover::after,
+.os-card:hover::after,
+.trust-card:hover::after,
+.log-card:hover::after {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+/* ---------- A slow halo of colour behind the app windows ---------- */
+
+.stage-visual,
+.merge-visual {
+  position: relative;
+  isolation: isolate;
+}
+
+.stage-visual::before,
+.merge-halo {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: min(92%, 720px);
+  aspect-ratio: 1;
+  /* Centred by its own size: it's square, so the box's width alone can't place it. */
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: conic-gradient(rgba(76, 201, 240, 0.5), rgba(156, 140, 255, 0.55), rgba(255, 201, 60, 0.32), rgba(110, 231, 183, 0.3), rgba(76, 201, 240, 0.5));
+  filter: blur(80px);
+  opacity: 0.42;
+  pointer-events: none;
+  animation: turn-slow 22s linear infinite;
+}
+
+/* ---------- Headings rise word by word ---------- */
+
+.h2 .word {
+  display: inline-block;
+  overflow: hidden;
+  /* Room for descenders inside the mask, given back so line spacing doesn't change. */
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+  vertical-align: top;
+}
+
+.h2 .word > span {
+  display: inline-block;
+  transform-origin: 0 100%;
+}
+
+.grad-text {
+  background-size: 220% 100%;
+  animation: grad-pan 8s ease-in-out infinite alternate;
+}
+
+@keyframes grad-pan {
+  to {
+    background-position: 100% 0;
+  }
+}
+
+/* ---------- Ticker ---------- */
+
+.marquee {
+  position: relative;
+  margin: clamp(24px, 6vh, 72px) -2vw;
+  padding: 26px 0;
+  overflow: clip;
+  border-block: 1px solid rgba(46, 63, 114, 0.55);
+  background: linear-gradient(90deg, rgba(74, 62, 158, 0.2), rgba(76, 201, 240, 0.07) 50%, rgba(255, 201, 60, 0.1));
+  transform: rotate(-1.4deg);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 60s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-track span {
+  display: inline-flex;
+  align-items: center;
+  gap: 30px;
+  padding-right: 30px;
+  color: transparent;
+  font: 700 clamp(1.5rem, 3.2vw, 2.6rem) / 1 var(--font-display);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  -webkit-text-stroke: 1px rgba(217, 223, 234, 0.5);
+}
+
+.marquee-track span:nth-child(3n + 1) {
+  color: var(--text);
+  -webkit-text-stroke: 0;
+}
+
+.marquee-track span::after {
+  content: '✦';
+  color: var(--accent);
+  font-size: 0.55em;
+  -webkit-text-stroke: 0;
+  text-shadow: 0 0 14px rgba(255, 201, 60, 0.8);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- Standing still ---------- */
+
+:root[data-motion='reduce'] .au,
+:root[data-motion='reduce'] .btn-primary::after,
+:root[data-motion='reduce'] .stage-visual::before,
+:root[data-motion='reduce'] .merge-halo,
+:root[data-motion='reduce'] .grad-text,
+:root[data-motion='reduce'] .marquee-track,
+:root[data-motion='reduce'] .tile::after,
+:root[data-motion='reduce'] .os-card::after,
+:root[data-motion='reduce'] .trust-card::after,
+:root[data-motion='reduce'] .log-card::after {
+  animation: none;
+}
+
+:root[data-motion='reduce'] .progress,
+:root[data-motion='reduce'] .cursor-glow {
+  display: none;
+}
+
+:root[data-motion='reduce'] .marquee {
+  transform: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+:root[data-motion='reduce'] .marquee-track {
+  flex-wrap: wrap;
+  justify-content: center;
+  width: auto;
+  row-gap: 14px;
+}
+
+/* The ticker's second copy only exists to make the loop seamless. */
+:root[data-motion='reduce'] .marquee-track span:nth-child(n + 15) {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .au,
+  .btn-primary::after,
+  .marquee-track,
+  .grad-text {
+    animation: none;
+  }
+}

@@ -45,7 +45,16 @@ const STROKE: Record<string, string> = {
   eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>',
   // A generic board-and-pipeline glyph, standing in for Azure DevOps (its logo isn't in simple-icons)
   pipeline: '<rect x="3.5" y="4" width="7" height="7" rx="1.6"/><rect x="13.5" y="13" width="7" height="7" rx="1.6"/><path d="M10.5 7.5h3.5a3 3 0 0 1 3 3V13M7 11v3.5a3 3 0 0 0 3 3h3.5"/>',
-  plug: '<path d="M9 3v5M15 3v5M6.5 8h11v3.5a5.5 5.5 0 0 1-11 0zM12 17v4"/>'
+  plug: '<path d="M9 3v5M15 3v5M6.5 8h11v3.5a5.5 5.5 0 0 1-11 0zM12 17v4"/>',
+  // The Harbor's mark in the app: a lighthouse with its beam to the right
+  lighthouse: '<path d="M9.2 21l1.1-10.5h3.4L14.8 21M7.5 21h9M9.8 10.5V7.8h4.4v2.7M9 7.8l3-3 3 3M10 15.5h4"/><path d="M17 6.2l3.5-1.4M17 8.8l3.5 1.4"/>',
+  lock: '<rect x="5" y="11" width="14" height="9.5" rx="2.2"/><path d="M8 11V8a4 4 0 0 1 8 0v3M12 14.5v2.5"/>',
+  verified: '<path d="M12 2.8l2.4 1.8 3-.1.9 2.9 2.4 1.7-1 2.9 1 2.9-2.4 1.7-.9 2.9-3-.1L12 21.2l-2.4-1.8-3 .1-.9-2.9-2.4-1.7 1-2.9-1-2.9 2.4-1.7.9-2.9 3 .1z"/><path d="M8.8 12l2.3 2.3 4.2-4.4"/>',
+  pen: '<path d="M4 20l1-4.5L16.5 4a2.1 2.1 0 0 1 3 3L8 18.5z"/><path d="M14.5 6l3 3"/>',
+  command: '<path d="M9 9h6v6H9z"/><path d="M9 9V6.5A2.5 2.5 0 1 0 6.5 9H9M15 9V6.5A2.5 2.5 0 1 1 17.5 9H15M9 15v2.5A2.5 2.5 0 1 1 6.5 15H9M15 15v2.5a2.5 2.5 0 1 0 2.5-2.5H15"/>',
+  wrench: '<path d="M14.6 6.4a4.2 4.2 0 0 0-5.4 5.4l-5.7 5.7 3 3 5.7-5.7a4.2 4.2 0 0 0 5.4-5.4l-2.8 2.8-2.4-.6-.6-2.4z"/>',
+  cloudOff: '<path d="M9.6 5.4A6 6 0 0 1 18 8.6a4 4 0 0 1 2.4 7M17 18.5H7a4.5 4.5 0 0 1-.6-9l.4-1"/><path d="M4 4l16 16"/>',
+  chevron: '<path d="M6 9l6 6 6-6"/>'
 }
 
 const BRAND: Record<string, string> = {

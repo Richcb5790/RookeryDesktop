@@ -1,0 +1,241 @@
+/* The flight log: release highlights along a lane, like commits on a branch. A sideways scroller
+   by default; `.is-pinned` (set by scenes/log.ts) hands the sideways travel to the page's scroll. */
+
+.log {
+  overflow: clip;
+}
+
+.log.is-pinned {
+  padding: 0;
+}
+
+.log.is-pinned .log-pin {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: calc(var(--nav-h) + 16px) 0 28px;
+}
+
+.log-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: clamp(20px, 4vh, 44px);
+}
+
+.log-head .scene-head {
+  margin-bottom: 0;
+}
+
+.log-nav {
+  display: flex;
+  flex: none;
+  gap: 10px;
+}
+
+.log-arrow {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: rgba(19, 32, 63, 0.6);
+  color: var(--text);
+  cursor: pointer;
+  translate: var(--mag-x, 0px) var(--mag-y, 0px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    border-color 0.25s,
+    background 0.25s,
+    opacity 0.25s;
+}
+
+.log-arrow:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.log-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+#log-prev svg {
+  transform: rotate(180deg);
+}
+
+.log-viewport {
+  padding: 22px 0 30px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.log-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.log.is-pinned .log-viewport {
+  overflow: visible;
+}
+
+.log-track {
+  --p: 0;
+  --edge: max(var(--gutter), calc((100vw - var(--maxw)) / 2));
+  position: relative;
+  display: flex;
+  gap: 26px;
+  width: max-content;
+  margin: 0;
+  padding: 0 var(--edge);
+  list-style: none;
+}
+
+/* The lane, and the part of it you've travelled */
+.log-track::before,
+.log-track::after {
+  content: '';
+  position: absolute;
+  top: 11px;
+  right: 0;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+}
+
+.log-track::before {
+  background: linear-gradient(90deg, transparent, var(--border) 3%, var(--border) 97%, transparent);
+}
+
+.log-track::after {
+  background: linear-gradient(90deg, var(--lane-1), var(--lane-0) 30%, var(--lane-3) 60%, var(--lane-2));
+  box-shadow: 0 0 16px rgba(76, 201, 240, 0.7);
+  transform: scaleX(var(--p));
+  transform-origin: 0 50%;
+}
+
+.log-item {
+  --c: var(--accent);
+  position: relative;
+  flex: none;
+  width: min(350px, 80vw);
+  padding-top: 46px;
+  scroll-margin-left: var(--edge);
+  scroll-snap-align: start;
+}
+
+/* A commit node on the lane, with a short line down to its card */
+.log-node {
+  position: absolute;
+  top: 2px;
+  left: 24px;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--c);
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow:
+    0 0 0 5px rgba(14, 23, 52, 0.92),
+    0 0 20px var(--c);
+  transition:
+    background 0.4s,
+    box-shadow 0.4s,
+    transform 0.5s var(--ease-spring);
+}
+
+.log-item::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: 33px;
+  width: 2px;
+  height: 24px;
+  background: linear-gradient(var(--c), transparent);
+  opacity: 0.7;
+}
+
+/* While pinned, nodes ahead of you are dark until the lane reaches them. */
+.log.is-pinned .log-item:not(.lit) .log-node {
+  background: var(--bg);
+  box-shadow: 0 0 0 5px rgba(14, 23, 52, 0.92);
+  transform: scale(0.8);
+}
+
+.log-card {
+  --t: var(--c);
+  position: relative;
+  height: 100%;
+  padding: 22px 22px 24px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(360px circle at 20% 0%, color-mix(in srgb, var(--c) 12%, transparent), transparent 62%),
+    linear-gradient(165deg, rgba(28, 42, 85, 0.72), rgba(17, 28, 61, 0.55));
+  transition:
+    border-color 0.3s,
+    translate 0.4s var(--ease-out);
+}
+
+.log-card:hover {
+  border-color: color-mix(in srgb, var(--c) 45%, var(--border));
+  translate: 0 -4px;
+}
+
+.log-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.log-card time {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.log-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.log-card p {
+  margin-top: 10px;
+  color: var(--text-2);
+  font-size: 0.94rem;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.log-end .log-card {
+  border-color: rgba(255, 201, 60, 0.45);
+  background:
+    radial-gradient(360px circle at 20% 0%, rgba(255, 201, 60, 0.16), transparent 62%),
+    linear-gradient(165deg, rgba(40, 46, 96, 0.8), rgba(17, 28, 61, 0.6));
+}
+
+.log-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .log-nav {
+    display: none;
+  }
+  .log-item {
+    width: min(310px, 82vw);
+  }
+}

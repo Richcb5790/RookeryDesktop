@@ -12,18 +12,38 @@
   border-bottom: 1px solid transparent;
 }
 
-.nav.scrolled {
-  background: rgba(14, 23, 52, 0.72);
-  border-bottom-color: rgba(46, 63, 114, 0.6);
-  backdrop-filter: blur(18px) saturate(1.3);
-  -webkit-backdrop-filter: blur(18px) saturate(1.3);
-}
-
+/* Once you leave the top, the nav's contents gather into a floating glass capsule. */
 .nav-inner {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   height: 100%;
+}
+
+.nav-inner::before {
+  content: '';
+  position: absolute;
+  inset: 7px calc(var(--gutter) - 16px);
+  z-index: -1;
+  border: 1px solid rgba(86, 104, 168, 0.5);
+  border-radius: 999px;
+  background: rgba(14, 23, 52, 0.7);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 18px 50px -20px rgba(3, 6, 20, 0.9);
+  opacity: 0;
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  transform: scaleX(0.97);
+  transition:
+    opacity 0.4s,
+    transform 0.5s var(--ease-out);
+}
+
+.nav.scrolled .nav-inner::before {
+  opacity: 1;
+  transform: none;
 }
 
 .brand {
@@ -52,11 +72,12 @@
 .nav-links a {
   position: relative;
   display: block;
-  padding: 8px 14px;
+  padding: 8px 11px;
   border-radius: 999px;
   color: var(--text-2);
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 500;
+  white-space: nowrap;
   text-decoration: none;
   transition:
     color 0.2s,
@@ -69,7 +90,8 @@
 }
 
 .nav-links a.active {
-  color: var(--text);
+  background: rgba(255, 201, 60, 0.1);
+  color: var(--accent);
 }
 
 .nav-links a.active::after {
@@ -89,7 +111,7 @@
   margin-left: 8px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1040px) {
   .nav-links {
     display: none;
   }
@@ -196,14 +218,77 @@
   gap: 32px;
 }
 
-.hero-eyebrow {
+/* What's new, as a capsule above the headline */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  margin-bottom: 26px;
+  padding: 5px 14px 5px 5px;
+  border: 1px solid rgba(156, 140, 255, 0.5);
+  border-radius: 999px;
+  background: rgba(28, 26, 77, 0.55);
+  box-shadow: 0 0 40px -12px rgba(156, 140, 255, 0.8);
   color: var(--text-2);
-  font-size: 12.5px;
-  letter-spacing: 0.14em;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s,
+    transform 0.25s var(--ease-out);
 }
 
-.hero-eyebrow::before {
-  display: none;
+.hero-badge:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 40px -10px rgba(255, 201, 60, 0.7);
+  transform: translateY(-2px);
+}
+
+.hb-tag {
+  flex: none;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #b4a8ff, var(--info));
+  color: #0b1230;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.hb-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hero-badge .ic {
+  flex: none;
+  color: var(--accent);
+  transition: transform 0.25s var(--ease-out);
+}
+
+.hero-badge:hover .ic {
+  transform: translateX(4px);
+}
+
+/* The headline's first line says what Rookery is, in small capitals, as part of the h1. */
+.hero-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: var(--text-2);
+  font: 600 12.5px/1.5 var(--font-body);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hero-kicker .pulse-dot {
+  flex: none;
 }
 
 .pulse-dot {
@@ -250,6 +335,7 @@
   display: inline-block;
 }
 
+
 .hero-sub {
   max-width: 580px;
   margin-top: 26px;
@@ -276,6 +362,96 @@
   position: relative;
   justify-self: center;
   width: clamp(240px, 29vw, 430px);
+}
+
+/* A violet glow behind the Professor, and three tilted orbits with commits circling on them */
+.hero-mascot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 130%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(156, 140, 255, 0.38), rgba(76, 201, 240, 0.1) 55%, transparent 72%);
+  translate: -50% -50%;
+  animation: halo-breathe 7s ease-in-out infinite alternate;
+}
+
+@keyframes halo-breathe {
+  from {
+    opacity: 0.7;
+    scale: 0.94;
+  }
+  to {
+    opacity: 1;
+    scale: 1.06;
+  }
+}
+
+.mascot-orbits {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 165%;
+  aspect-ratio: 1;
+  pointer-events: none;
+  translate: -50% -50%;
+}
+
+.orbit {
+  --tilt: -18deg;
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(169, 160, 214, 0.26);
+  border-radius: 50%;
+  animation: orbit 26s linear infinite;
+}
+
+.orbit.o2 {
+  --tilt: 24deg;
+  inset: 9%;
+  border-style: dashed;
+  border-color: rgba(76, 201, 240, 0.22);
+  animation-duration: 38s;
+  animation-direction: reverse;
+}
+
+.orbit.o3 {
+  --tilt: -52deg;
+  inset: 20%;
+  border-color: rgba(255, 201, 60, 0.2);
+  animation-duration: 19s;
+}
+
+.orbit i {
+  --c: var(--lane-0);
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow:
+    0 0 0 3px rgba(14, 23, 52, 0.8),
+    0 0 18px 2px var(--c);
+}
+
+.orbit i:nth-child(2) {
+  top: auto;
+  bottom: -6px;
+}
+
+/* Tilted into the page, then turned about its own axis: the dots trace an ellipse. */
+@keyframes orbit {
+  from {
+    transform: rotate(var(--tilt)) rotateX(70deg) rotate(0deg);
+  }
+  to {
+    transform: rotate(var(--tilt)) rotateX(70deg) rotate(360deg);
+  }
 }
 
 .mascot-bob {
@@ -385,8 +561,12 @@
 
 @media (max-width: 900px) {
   .hero-inner {
-    grid-template-columns: 1fr;
+    /* minmax(0, …): the badge's single line mustn't set the column's width */
+    grid-template-columns: minmax(0, 1fr);
     text-align: left;
+  }
+  .hero-copy {
+    min-width: 0;
   }
   .hero-mascot {
     position: absolute;
@@ -406,8 +586,17 @@
     width: 92px;
     opacity: 0.75;
   }
+  .mascot-orbits {
+    display: none;
+  }
+  .hero-kicker {
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+  }
 }
 
+:root[data-motion='reduce'] .orbit,
+:root[data-motion='reduce'] .hero-mascot::before,
 :root[data-motion='reduce'] .mascot-bob,
 :root[data-motion='reduce'] .mascot *,
 :root[data-motion='reduce'] .mascot-shadow,

@@ -6,15 +6,20 @@ import '@fontsource/jetbrains-mono/500.css'
 
 import './styles/tokens.css'
 import './styles/base.css'
+import './styles/effects.css'
 import './styles/hero.css'
 import './styles/graph.css'
 import './styles/integrations.css'
 import './styles/isolate.css'
+import './styles/merge.css'
 import './styles/agents.css'
 import './styles/features.css'
+import './styles/log.css'
+import './styles/trust.css'
 import './styles/download.css'
 import './styles/footer.css'
 
+import { initEffects } from './lib/effects'
 import { hydrateIcons } from './lib/icons'
 import { finePointer, markMotion, reducedMotion } from './lib/motion'
 import { pointerParallax, reveals, scrollParallax, startPointer, tilt } from './lib/parallax'
@@ -28,7 +33,10 @@ import { initGraph } from './scenes/graph'
 import { initHero } from './scenes/hero'
 import { initIntegrations } from './scenes/integrations'
 import { initIsolate } from './scenes/isolate'
+import { initLog } from './scenes/log'
+import { initMerge } from './scenes/merge'
 import { initNav } from './scenes/nav'
+import { initTrust } from './scenes/trust'
 
 markMotion()
 hydrateIcons()
@@ -46,12 +54,16 @@ initHero(reducedMotion)
 initGraph(reducedMotion)
 initIntegrations(reducedMotion)
 initIsolate(reducedMotion)
+initMerge(reducedMotion)
 initAgents(reducedMotion)
 initFeatures(reducedMotion)
+initLog(reducedMotion)
+initTrust(reducedMotion)
 initDownload(reducedMotion)
 initFooter(reducedMotion)
-// Created after the pinned scenes, so its section positions include their pin spacing.
+// Created after the pinned scenes, so their section positions include the pin spacing.
 initNav()
+initEffects(reducedMotion)
 
 if (lively) {
   scrollParallax(document)

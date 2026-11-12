@@ -1,0 +1,286 @@
+/* "Private by design": six promises around a terminal that verifies a download, then the FAQ. */
+
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(300px, 1.25fr);
+  gap: 16px;
+}
+
+/* The cards join the outer grid directly, so the terminal can stand beside both of their rows. */
+.trust-cards {
+  display: contents;
+}
+
+.trust-card {
+  --t: var(--accent);
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 0%;
+  position: relative;
+  padding: 24px 22px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(380px circle at var(--mx) var(--my), color-mix(in srgb, var(--t) 13%, transparent), transparent 60%),
+    linear-gradient(165deg, rgba(28, 42, 85, 0.65), rgba(17, 28, 61, 0.5));
+  list-style: none;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition:
+    transform 0.6s var(--ease-out),
+    border-color 0.3s;
+}
+
+.trust-card.tilting {
+  transition:
+    transform 0.1s linear,
+    border-color 0.3s;
+}
+
+.trust-card:hover {
+  border-color: color-mix(in srgb, var(--t) 45%, var(--border));
+}
+
+.trust-card .ic {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 16px;
+  padding: 11px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--t) 16%, var(--surface-3));
+  color: var(--t);
+  box-shadow: 0 0 26px -6px var(--t);
+}
+
+.trust-card h3 {
+  font-size: 1.08rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.trust-card p {
+  margin-top: 8px;
+  color: var(--text-2);
+  font-size: 0.93rem;
+  line-height: 1.55;
+  opacity: 0.84;
+}
+
+/* ---------- Verify your download ---------- */
+
+.verify {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  grid-column: 4;
+  grid-row: 1 / span 2;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: #080e24;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 40px 90px -40px rgba(3, 6, 20, 0.9),
+    0 0 90px -40px rgba(110, 231, 183, 0.55);
+}
+
+.verify-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-elev);
+}
+
+.verify-head span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--danger);
+  opacity: 0.85;
+}
+
+.verify-head span:nth-child(2) {
+  background: var(--accent);
+}
+
+.verify-head span:nth-child(3) {
+  background: var(--success);
+}
+
+.verify-head b {
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.verify-body {
+  flex: 1;
+  margin: 0;
+  padding: 18px 18px 96px;
+  color: var(--text-2);
+  font: 12px/1.75 var(--font-mono);
+  white-space: normal;
+}
+
+.v-line {
+  display: block;
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+.v-line i {
+  margin-right: 8px;
+  color: var(--info);
+  font-style: normal;
+}
+
+.v-ok {
+  margin-bottom: 14px;
+  color: var(--success);
+}
+
+.verify-seal {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border: 2px dashed var(--success);
+  border-radius: 50%;
+  background: rgba(110, 231, 183, 0.1);
+  color: var(--success);
+  box-shadow: 0 0 34px -4px rgba(110, 231, 183, 0.6);
+  transform: rotate(-8deg);
+}
+
+/* ---------- FAQ ---------- */
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+  align-items: start;
+  gap: clamp(32px, 6vw, 90px);
+}
+
+.faq-grid .scene-head {
+  position: sticky;
+  top: calc(var(--nav-h) + 40px);
+  margin-bottom: 0;
+}
+
+.faq-list {
+  display: grid;
+  gap: 12px;
+}
+
+.faq-item {
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  background: rgba(19, 32, 63, 0.5);
+  transition:
+    border-color 0.3s,
+    background 0.3s,
+    box-shadow 0.3s;
+}
+
+.faq-item:hover {
+  border-color: var(--border);
+}
+
+.faq-item[open] {
+  border-color: rgba(255, 201, 60, 0.42);
+  background: linear-gradient(165deg, rgba(40, 46, 96, 0.7), rgba(17, 28, 61, 0.6));
+  box-shadow: 0 24px 60px -34px rgba(255, 201, 60, 0.4);
+}
+
+.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item h3 {
+  font-size: 1.06rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+
+.faq-item summary .ic {
+  flex: none;
+  color: var(--accent);
+  transition: transform 0.35s var(--ease-out);
+}
+
+.faq-item[open] summary .ic {
+  transform: rotate(180deg);
+}
+
+.faq-a {
+  padding: 0 22px 20px;
+  color: var(--text-2);
+  font-size: 0.98rem;
+  line-height: 1.65;
+  opacity: 0.9;
+}
+
+.faq-item[open] .faq-a {
+  animation: faq-in 0.45s var(--ease-out);
+}
+
+@keyframes faq-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .trust-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .verify {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  .verify-body {
+    padding-bottom: 24px;
+  }
+}
+
+@media (max-width: 900px) {
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+  .faq-grid .scene-head {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .trust-grid {
+    grid-template-columns: 1fr;
+  }
+  .verify-seal {
+    width: 54px;
+    height: 54px;
+  }
+}
+
+:root[data-motion='reduce'] .faq-item[open] .faq-a {
+  animation: none;
+}

@@ -3,29 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rookery · See every branch's story</title>
+    <title>Rookery: Visual Git Client and Git GUI for Windows and Linux</title>
     <meta
       name="description"
-      content="Rookery is a desktop Git client with a living commit graph, branch isolation that tells each branch's story, GitHub, GitLab, Bitbucket and Azure DevOps integrations, and your own local AI agent for conflicts and commit explanations."
+      content="Rookery is a desktop Git GUI for Windows and Linux: a visual commit graph, branch lineage, submodule sync, pull requests and your own AI agent. Free download."
     />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href="%SITE_URL%" />
+    <meta name="application-name" content="Rookery" />
+    <meta name="apple-mobile-web-app-title" content="Rookery" />
     <meta name="theme-color" content="#0E1734" />
+    <meta name="color-scheme" content="dark" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" href="/og.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Rookery" />
-    <meta property="og:title" content="Rookery · See every branch's story" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Rookery: the visual Git client where every branch has a story" />
     <meta
       property="og:description"
-      content="A desktop Git client that draws your history like a star map, isolates any branch to tell its story, and works with the AI agent you already use."
+      content="A desktop Git GUI that draws your history like a star map, isolates any branch to tell its story, keeps submodules in step, and works with the AI agent you already use."
     />
-    <meta property="og:url" content="https://richcb5790.github.io/RookeryDesktop/" />
-    <meta property="og:image" content="https://richcb5790.github.io/RookeryDesktop/og.png" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:url" content="%SITE_URL%" />
+    <meta property="og:image" content="%SITE_URL%social.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Rookery, a visual Git client: the Professor, a penguin in a space suit, beside a commit graph drawn as a constellation" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Rookery: the visual Git client where every branch has a story" />
+    <meta
+      name="twitter:description"
+      content="Visual commit graph, branch lineage, submodule sync, pull requests beside your branches, and your own AI agent. For Windows and Linux."
+    />
+    <meta name="twitter:image" content="%SITE_URL%social.png" />
+    <!-- Structured data (the app, the site and the FAQ) is added here at build time: see vite.config.ts -->
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <div class="aurora" aria-hidden="true"><span class="au au-violet"></span><span class="au au-cyan"></span><span class="au au-gold"></span><span class="au au-green"></span></div>
     <canvas id="starfield" aria-hidden="true"></canvas>
+    <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+    <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
 
     <header class="nav" id="nav">
       <div class="nav-inner container">
@@ -38,8 +59,10 @@
             <li><a href="#graph">Graph</a></li>
             <li><a href="#integrations">Integrations</a></li>
             <li><a href="#isolate">Isolate</a></li>
+            <li><a href="#merge">Merge</a></li>
             <li><a href="#agents">AI agents</a></li>
             <li><a href="#features">Features</a></li>
+            <li><a href="#whats-new">What's new</a></li>
           </ul>
         </nav>
         <a class="btn btn-primary btn-sm nav-cta" href="#download"><i data-icon="download" data-size="16"></i>Download</a>
@@ -48,7 +71,7 @@
 
     <main id="main" tabindex="-1">
       <!-- ============ HERO ============ -->
-      <section class="hero" id="top" data-parallax>
+      <section class="hero" id="top" data-parallax data-sky="violet">
         <div class="hero-sky" aria-hidden="true">
           <div class="nebula n1" data-speed="0.25"></div>
           <div class="nebula n2" data-speed="0.4"></div>
@@ -81,24 +104,35 @@
 
         <div class="hero-inner container">
           <div class="hero-copy">
-            <p class="eyebrow hero-eyebrow"><span class="pulse-dot"></span>A desktop Git client for Windows, macOS and Linux</p>
+            <a class="hero-badge" href="#whats-new">
+              <span class="hb-tag" id="hero-version">New</span>
+              <span class="hb-text">Signed in-app updates and a line-by-line merge editor</span>
+              <i data-icon="arrowRight" data-size="15"></i>
+            </a>
             <h1 class="hero-title">
+              <span class="hero-kicker"><span class="pulse-dot"></span>Rookery, the visual Git client for Windows and Linux</span>
               <span class="line"><span>Every branch</span></span>
               <span class="line"><span class="grad-text">has a story.</span></span>
             </h1>
             <p class="hero-sub">
-              Rookery draws your history like a star map, then isolates any branch to show where it came from, what flowed
-              into it, and everywhere it landed. It works with the hosts you already use and hands conflicts to your own AI agent.
+              Rookery is a Git GUI that draws your history like a star map, then isolates any branch to show where it came
+              from, what flowed into it, and everywhere it landed. It keeps submodules in step, works with the hosts you
+              already use, and hands conflicts to your own AI agent.
             </p>
             <div class="hero-cta">
               <a class="btn btn-primary" id="hero-download" href="#download"><i data-icon="download" data-size="18"></i><span>Download Rookery</span></a>
               <a class="btn btn-ghost" href="#graph">Take the tour<i data-icon="arrowDown" data-size="16"></i></a>
             </div>
-            <p class="hero-meta" id="hero-meta">Runs on the git you already have · Your credentials never leave your machine</p>
+            <p class="hero-meta" id="hero-meta">Runs on the git you already have · Signed installers · No account, no cloud</p>
           </div>
           <div class="hero-mascot" data-depth="1.3">
+            <div class="mascot-orbits" aria-hidden="true">
+              <span class="orbit o1"><i style="--c: var(--lane-0)"></i></span>
+              <span class="orbit o2"><i style="--c: var(--lane-1)"></i><i style="--c: var(--lane-2)"></i></span>
+              <span class="orbit o3"><i style="--c: var(--lane-5)"></i></span>
+            </div>
             <div class="mascot-bob">
-              <div class="mascot" id="hero-mascot"></div>
+              <div class="mascot" id="hero-mascot" role="img" aria-label="The Professor, Rookery's penguin mascot, in a space suit"></div>
               <div class="mascot-shadow"></div>
             </div>
           </div>
@@ -108,7 +142,7 @@
       </section>
 
       <!-- ============ COMMIT GRAPH ============ -->
-      <section class="scene graph-scene" id="graph" tabindex="-1" aria-labelledby="graph-title">
+      <section class="scene graph-scene" id="graph" tabindex="-1" aria-labelledby="graph-title" data-sky="cyan">
         <div class="pin-stage">
           <div class="container stage-grid">
             <div class="stage-copy">
@@ -117,7 +151,7 @@
               <ol class="steps" id="graph-steps">
                 <li class="step is-active">
                   <h3><i data-icon="branch" data-size="18"></i>Every branch flies its own lane</h3>
-                  <p>Each line of work keeps its lane and color from tip to fork, so you can follow it down the whole history at a glance.</p>
+                  <p>Each line of work keeps its lane and color from tip to fork, and a faint band in that color ties every commit to its branch, so you can follow it down the whole history at a glance.</p>
                 </li>
                 <li class="step">
                   <h3><i data-icon="merge" data-size="18"></i>Merges curve home</h3>
@@ -125,7 +159,7 @@
                 </li>
                 <li class="step">
                   <h3><i data-icon="pr" data-size="18"></i>Drag, drop, done</h3>
-                  <p>Drop one branch onto another to merge, rebase, fast-forward or open a pull request. Hover a commit to light up its line.</p>
+                  <p>Drop one branch onto another to merge, rebase, fast-forward or open a pull request, even into a branch you don't have checked out. Hover a commit to light up its line.</p>
                 </li>
               </ol>
             </div>
@@ -164,11 +198,11 @@
       </section>
 
       <!-- ============ INTEGRATIONS ============ -->
-      <section class="scene integrations" id="integrations" tabindex="-1" aria-labelledby="int-title" data-parallax>
+      <section class="scene integrations" id="integrations" tabindex="-1" aria-labelledby="int-title" data-parallax data-sky="violet">
         <div class="container int-grid">
           <div class="int-copy">
             <p class="eyebrow" data-reveal>Hosting integrations</p>
-            <h2 class="h2" id="int-title" data-reveal="1">Docked with every place your code lives.</h2>
+            <h2 class="h2" id="int-title">Docked with every place your code lives.</h2>
             <p class="lede" data-reveal="2">
               Connect GitHub, GitLab, Bitbucket and Azure DevOps, plus Jira and Trello for issues. Pull requests and issues
               show up next to the branches they belong to, and the Launchpad gathers everything waiting on you.
@@ -199,7 +233,14 @@
                 <i data-icon="rocket" data-size="20"></i>
                 <div>
                   <h3>The Launchpad</h3>
-                  <p>Reviews waiting for you, your open pull requests and issues assigned to you, from every account, in one tab.</p>
+                  <p>Reviews waiting for you, your open pull requests and issues assigned to you, from every account, in one tab. The Harbor tells you what's waiting there.</p>
+                </div>
+              </li>
+              <li class="int-card" data-reveal="5" data-hosts="github gitlab">
+                <i data-icon="search" data-size="20"></i>
+                <div>
+                  <h3>Clone anything you can see</h3>
+                  <p>Search to clone finds every repository your account can see, not only your own: another team's, an <code>owner/</code> prefix, or an exact name.</p>
                 </div>
               </li>
             </ul>
@@ -226,7 +267,7 @@
       </section>
 
       <!-- ============ ISOLATE ============ -->
-      <section class="scene isolate-scene" id="isolate" tabindex="-1" aria-labelledby="iso-title">
+      <section class="scene isolate-scene" id="isolate" tabindex="-1" aria-labelledby="iso-title" data-sky="gold">
         <div class="pin-stage">
           <div class="container stage-grid iso-grid">
             <div class="stage-copy">
@@ -247,7 +288,7 @@
                 </li>
                 <li class="step">
                   <h3><i data-icon="list" data-size="18"></i>Trust the timeline</h3>
-                  <p>Every fact says where it came from: recorded by Rookery, the branch reflog, a merge message, or inferred from the graph.</p>
+                  <p>Every fact says where it came from: recorded by Rookery, the branch reflog, a merge message, or inferred from the graph. A branch you pulled down from its remote still shows its whole line, back to its real base.</p>
                 </li>
               </ol>
             </div>
@@ -324,16 +365,90 @@
         </div>
       </section>
 
+      <!-- ============ MERGE EDITOR ============ -->
+      <section class="scene merge" id="merge" tabindex="-1" aria-labelledby="mg-title" data-sky="green">
+        <div class="container merge-grid">
+          <div class="merge-copy">
+            <p class="eyebrow" data-reveal>Merge conflicts</p>
+            <h2 class="h2" id="mg-title">Pick the lines.<br /><span class="accent-text">Keep both stories.</span></h2>
+            <p class="lede" data-reveal="1">
+              Yours and Theirs sit side by side over an editable Result. Click a line to take it, from either side, in
+              any order. The Result builds as you go.
+            </p>
+            <ul class="merge-points">
+              <li data-reveal="1">
+                <i data-icon="check" data-size="18"></i>
+                <div><b>Line by line, or all at once</b><span>Pick single lines, take a whole side, or take neither. Every conflict shows whether it's resolved, unresolved or edited by hand.</span></div>
+              </li>
+              <li data-reveal="2">
+                <i data-icon="details" data-size="18"></i>
+                <div><b>Opens where the trouble is</b><span>The editor takes the full width of the window and scrolls to the first conflict. A progress bar counts them down.</span></div>
+              </li>
+              <li data-reveal="3">
+                <i data-icon="eye" data-size="18"></i>
+                <div><b>Know before you merge</b><span>Rookery predicts conflicts in the merge preview, before anything is touched.</span></div>
+              </li>
+              <li data-reveal="4">
+                <i data-icon="layers" data-size="18"></i>
+                <div><b>Submodule pointers settle by commit</b><span>When one side contains the other, Rookery takes the newer commit. When they diverged, merge them in the submodule with one click.</span></div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="merge-visual" data-reveal="1">
+            <div class="merge-halo" aria-hidden="true"></div>
+            <div class="app-window mg-window" id="mg-window" role="group" aria-label="A working demo of Rookery's merge editor">
+              <div class="mg-bar">
+                <span class="mg-file"><i data-icon="warning" data-size="14"></i>src/launch/countdown.ts</span>
+                <span class="mg-step">File 1 of 1</span>
+                <span class="mg-progress" id="mg-progress" data-state="open"><i></i><b id="mg-count">0 of 1 resolved</b></span>
+              </div>
+              <div class="mg-sides">
+                <div class="mg-side yours">
+                  <div class="mg-label">
+                    <label><input type="checkbox" id="mg-all-yours" /><span>Yours</span></label>
+                    <small>main</small>
+                  </div>
+                  <div class="mg-code" id="mg-yours"></div>
+                </div>
+                <div class="mg-side theirs">
+                  <div class="mg-label">
+                    <label><input type="checkbox" id="mg-all-theirs" /><span>Theirs</span></label>
+                    <small>feature/telemetry</small>
+                  </div>
+                  <div class="mg-code" id="mg-theirs"></div>
+                </div>
+              </div>
+              <div class="mg-result">
+                <div class="mg-label">
+                  <span>Result <small>editable</small></span>
+                  <span class="mg-status" id="mg-status" data-state="open">Unresolved</span>
+                  <span class="mg-actions">
+                    <button type="button" id="mg-neither">Neither</button>
+                    <button type="button" id="mg-clear">Clear picks</button>
+                  </span>
+                </div>
+                <div class="mg-code" id="mg-result" aria-live="polite"></div>
+              </div>
+              <div class="mg-foot">
+                <span class="mg-hint" id="mg-hint"><i data-icon="sparkle" data-size="14"></i>Try it: click a highlighted line on either side.</span>
+                <span class="cf-btn save" id="mg-save"><i data-icon="check" data-size="14"></i>Save and mark resolved</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ============ AGENTS ============ -->
-      <section class="scene agents" id="agents" tabindex="-1" aria-labelledby="ag-title" data-parallax>
+      <section class="scene agents" id="agents" tabindex="-1" aria-labelledby="ag-title" data-parallax data-sky="gold">
         <div class="agents-glow" data-speed="0.3" aria-hidden="true"></div>
         <div class="container">
           <div class="scene-head center">
             <p class="eyebrow" data-reveal>Local AI agents</p>
-            <h2 class="h2" id="ag-title" data-reveal="1">Bring your own agent.<br /><span class="accent-text">Keep the final say.</span></h2>
+            <h2 class="h2" id="ag-title">Bring your own agent.<br /><span class="accent-text">Keep the final say.</span></h2>
             <p class="lede" data-reveal="2">
               Rookery has no AI of its own and no service behind it. It hands the work to the coding agent you already use,
-              signed in as you, and shows you what it proposes.
+              signed in as you, and shows you what it proposes: a conflict resolved, a commit explained, a commit message written.
             </p>
           </div>
 
@@ -358,7 +473,7 @@
               <header class="demo-head">
                 <div>
                   <h3><i data-icon="sparkle" data-size="20"></i>Resolve conflicts with AI</h3>
-                  <p>The agent reads the base, ours and theirs, then proposes the whole resolved file with its reasoning. Nothing touches disk until you press Save.</p>
+                  <p>The agent reads the base, yours and theirs, then proposes the whole resolved file with its reasoning. Nothing touches disk until you press Save.</p>
                 </div>
                 <button type="button" class="btn btn-ghost btn-sm replay" id="conflict-replay"><i data-icon="refresh" data-size="14"></i>Replay</button>
               </header>
@@ -369,13 +484,12 @@
                 </div>
                 <div class="cf-actions">
                   <span class="cf-btn ai" id="cf-ai"><i data-icon="sparkle" data-size="14"></i>Resolve with AI</span>
-                  <span class="cf-btn">Take all ours</span>
-                  <span class="cf-btn">Take all theirs</span>
+                  <span class="cf-btn">Use whole file</span>
                   <span class="cf-btn save" id="cf-save"><i data-icon="check" data-size="14"></i>Save and mark resolved</span>
                 </div>
                 <div class="cf-panes">
                   <div class="cf-pane ours">
-                    <div class="cf-label">Ours <small>main</small></div>
+                    <div class="cf-label">Yours <small>main</small></div>
                     <pre id="cf-ours"></pre>
                   </div>
                   <div class="cf-pane theirs">
@@ -388,7 +502,7 @@
                   <p><b id="cf-agent-name">Claude Code's</b> proposal: <span id="cf-reason"></span></p>
                 </div>
                 <div class="cf-pane output">
-                  <div class="cf-label">Output <small>editable</small></div>
+                  <div class="cf-label">Result <small>editable</small></div>
                   <pre id="cf-output"></pre>
                 </div>
                 <div class="cf-you" id="cf-you"><i data-icon="users" data-size="14"></i>Your move: review it, edit if needed, then save.</div>
@@ -425,6 +539,34 @@
                 </div>
               </div>
             </article>
+
+            <!-- Commit message -->
+            <article class="demo message-demo" id="message-demo" data-reveal>
+              <header class="demo-head">
+                <div>
+                  <h3><i data-icon="pen" data-size="20"></i>Write the commit message</h3>
+                  <p>One click asks your agent for a message for what's staged: a short imperative summary, and a body only when it's needed, in the style of the repository's recent commits. Edit it, or undo it.</p>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm replay" id="message-replay"><i data-icon="refresh" data-size="14"></i>Replay</button>
+              </header>
+              <div class="app-window cm-window" aria-hidden="true">
+                <div class="cm-files">
+                  <b>Staged files <span>3</span></b>
+                  <div><span class="fs m">M</span>docking/handshake.ts<span class="stat">+18 −4</span></div>
+                  <div><span class="fs a">A</span>docking/errors.ts<span class="stat">+9</span></div>
+                  <div><span class="fs m">M</span>docking/handshake.test.ts<span class="stat">+31 −2</span></div>
+                </div>
+                <div class="cm-form">
+                  <div class="cm-field cm-summary"><small>Summary</small><div id="cm-summary"></div><em id="cm-count">0</em></div>
+                  <div class="cm-field cm-body"><small>Description</small><div id="cm-body"></div></div>
+                  <div class="cm-actions">
+                    <span class="cf-btn ai" id="cm-ai"><i data-icon="sparkle" data-size="14"></i>Write message</span>
+                    <span class="cm-note" id="cm-note"><i data-icon="check" data-size="13"></i>Written by <b id="cm-agent-name">Claude Code</b> · Undo</span>
+                    <span class="cf-btn save" id="cm-commit"><i data-icon="check" data-size="14"></i>Commit</span>
+                  </div>
+                </div>
+              </div>
+            </article>
           </div>
 
           <ul class="promise-row">
@@ -436,12 +578,21 @@
         </div>
       </section>
 
+      <!-- ============ MARQUEE ============ -->
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track" id="marquee-track">
+          <span>Visual commit graph</span><span>Branch lineage</span><span>Submodule sync</span><span>Line-by-line merge editor</span>
+          <span>Interactive rebase</span><span>Pull requests</span><span>Worktrees</span><span>Git LFS</span><span>Git Flow</span>
+          <span>Image diffs</span><span>Blame</span><span>Built-in terminal</span><span>Local AI agents</span><span>Signed updates</span>
+        </div>
+      </div>
+
       <!-- ============ MORE FEATURES ============ -->
-      <section class="scene features" id="features" tabindex="-1" aria-labelledby="ft-title">
+      <section class="scene features" id="features" tabindex="-1" aria-labelledby="ft-title" data-sky="cyan">
         <div class="container">
           <div class="scene-head center">
             <p class="eyebrow" data-reveal>The rest of the toolkit</p>
-            <h2 class="h2" id="ft-title" data-reveal="1">Everything you'd expect.<br />Some things you wouldn't.</h2>
+            <h2 class="h2" id="ft-title">Everything you'd expect.<br />Some things you wouldn't.</h2>
           </div>
           <ul class="bento">
             <li class="tile tile-sub" data-tilt="6" data-reveal>
@@ -449,32 +600,254 @@
                 <div class="tile-text">
                   <i data-icon="layers" data-size="26" class="tile-icon"></i>
                   <h3>Submodule sync</h3>
-                  <p>Create, check out, merge, push, pull and rebase carry through every submodule. Merges go submodule-first and the parent's pointers resolve to the results. Every step is previewed, journaled, and can be rolled back.</p>
+                  <p>Create, check out, merge, push, pull and rebase carry through every submodule. Merges go submodule-first and the parent's pointers resolve to the results. Rookery records submodule commits for you, commits their files from the parent's commit panel, and one undo takes it all back.</p>
                 </div>
                 <svg class="sub-diagram" id="sub-diagram" viewBox="0 0 300 200" aria-hidden="true"></svg>
               </div>
             </li>
             <li class="tile" data-tilt="8" data-reveal="1" style="--t: var(--lane-1)"><div class="tile-inner"><i data-icon="reorder" data-size="24" class="tile-icon"></i><h3>Interactive rebase</h3><p>Pick, reword, squash, fixup and drop. Drag to reorder, and undo it all.</p></div></li>
-            <li class="tile" data-tilt="8" data-reveal="2" style="--t: var(--lane-0)"><div class="tile-inner"><i data-icon="anchor" data-size="24" class="tile-icon"></i><h3>The Harbor</h3><p>Every repository you have, including ones it finds in your folders. <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd></p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="2" style="--t: var(--lane-0)"><div class="tile-inner"><i data-icon="lighthouse" data-size="24" class="tile-icon"></i><h3>The Harbor</h3><p>Rookery's home, in front of your tabs: every repository you have, including ones it finds in your folders. <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd></p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="1" style="--t: var(--lane-5)"><div class="tile-inner"><i data-icon="pull" data-size="24" class="tile-icon"></i><h3>Pull without switching</h3><p>Pull any branch without checking it out, or every branch at once. You stay right where you are.</p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="2" style="--t: var(--lane-6)"><div class="tile-inner"><i data-icon="command" data-size="24" class="tile-icon"></i><h3>Find anything</h3><p><kbd>Ctrl</kbd>+<kbd>P</kbd> for commands, branches and files. Search commits by message, author, SHA or file, and find text in any diff.</p></div></li>
             <li class="tile" data-tilt="8" data-reveal="1" style="--t: var(--lane-5)"><div class="tile-inner"><i data-icon="worktree" data-size="24" class="tile-icon"></i><h3>Worktrees</h3><p>Create, lock and prune worktrees, and open each in its own tab.</p></div></li>
             <li class="tile" data-tilt="8" data-reveal="2" style="--t: var(--lane-4)"><div class="tile-inner"><i data-icon="box" data-size="24" class="tile-icon"></i><h3>Git LFS &amp; Git Flow</h3><p>Track, lock and prune LFS files. Start and finish features, releases and hotfixes.</p></div></li>
             <li class="tile" data-tilt="8" data-reveal="3" style="--t: var(--lane-6)"><div class="tile-inner"><i data-icon="image" data-size="24" class="tile-icon"></i><h3>Image diffs</h3><p>Side by side, swipe and onion skin, for PNG, JPEG, WebP, SVG and more.</p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="4" style="--t: var(--lane-0)"><div class="tile-inner"><i data-icon="cloud" data-size="24" class="tile-icon"></i><h3>Quiet remote checks</h3><p>Rookery asks each remote what moved and fetches only when something did. No fetch every minute, no surprise prompts.</p></div></li>
             <li class="tile" data-tilt="8" data-reveal="1" style="--t: var(--lane-7)"><div class="tile-inner"><i data-icon="terminal" data-size="24" class="tile-icon"></i><h3>Built-in terminal</h3><p>Docked below or beside the graph, with git completions for branches, files and flags.</p></div></li>
             <li class="tile" data-tilt="8" data-reveal="2" style="--t: var(--lane-3)"><div class="tile-inner"><i data-icon="users" data-size="24" class="tile-icon"></i><h3>Profiles &amp; workspaces</h3><p>Separate identities and accounts per profile. Fetch or clone a whole group of repos at once.</p></div></li>
             <li class="tile" data-tilt="8" data-reveal="3" style="--t: var(--lane-2)"><div class="tile-inner"><i data-icon="keyboard" data-size="24" class="tile-icon"></i><h3>Your shortcuts</h3><p>Rebind any command. <kbd>Ctrl</kbd>+<kbd>/</kbd> shows them all.</p></div></li>
-            <li class="tile wide" data-tilt="6" data-reveal="1" style="--t: var(--lane-5)"><div class="tile-inner"><i data-icon="history" data-size="24" class="tile-icon"></i><h3>Undo that</h3><p>Checkouts, commits, discards, resets and branch changes can all be undone, even across submodules.</p></div></li>
-            <li class="tile wide" data-tilt="6" data-reveal="2" style="--t: var(--lane-7)"><div class="tile-inner"><i data-icon="external" data-size="24" class="tile-icon"></i><h3>Your diff and merge tools</h3><p>Hunk, inline and split diffs built in, blame with an age heatmap, and any external diff or merge tool one click away.</p></div></li>
+            <li class="tile" data-tilt="8" data-reveal="4" style="--t: var(--lane-5)"><div class="tile-inner"><i data-icon="wrench" data-size="24" class="tile-icon"></i><h3>Mends itself</h3><p>When git trips on a damaged commit-graph cache, Rookery repairs it and retries, then tells you what happened.</p></div></li>
+            <li class="tile wide" data-tilt="6" data-reveal="1" style="--t: var(--lane-5)"><div class="tile-inner"><i data-icon="history" data-size="24" class="tile-icon"></i><h3>Undo that</h3><p>Checkouts, commits, discards, resets, pulls and branch changes can all be undone, even across submodules.</p></div></li>
+            <li class="tile wide" data-tilt="6" data-reveal="2" style="--t: var(--lane-7)"><div class="tile-inner"><i data-icon="external" data-size="24" class="tile-icon"></i><h3>Your diff and merge tools</h3><p>Hunk, inline and split diffs that wrap long lines, staging down to the line, blame with an age heatmap, and any external diff or merge tool one click away.</p></div></li>
           </ul>
 
-          <ul class="truths">
-            <li data-reveal><b>Runs real git.</b> Every command goes through the git CLI, so hooks, signing, LFS and credential helpers behave exactly as they do in your terminal.</li>
-            <li data-reveal="1"><b>Never stores git credentials.</b> Git Credential Manager or ssh-agent handle them, and any prompt git raises is shown to you as it is.</li>
+          <ul class="stats" aria-label="Rookery in numbers">
+            <li data-reveal><b><span data-count="8">8</span></b><span>Git operations that carry through every submodule</span></li>
+            <li data-reveal="1"><b><span data-count="6">6</span></b><span>hosts and issue trackers, side by side with your branches</span></li>
+            <li data-reveal="2"><b><span data-count="4">4</span><small>+1</small></b><span>agent presets, plus any command you like</span></li>
+            <li data-reveal="3"><b><span data-count="0">0</span></b><span>accounts to create, and no cloud behind it</span></li>
           </ul>
         </div>
       </section>
 
+      <!-- ============ WHAT'S NEW ============ -->
+      <section class="scene log" id="whats-new" tabindex="-1" aria-labelledby="log-title" data-sky="violet">
+        <div class="log-pin">
+          <div class="container log-head">
+            <div class="scene-head">
+              <p class="eyebrow" data-reveal>What's new</p>
+              <h2 class="h2" id="log-title">The flight log.</h2>
+              <p class="lede" data-reveal="1">Rookery ships often. Here are the highlights since launch, newest first.</p>
+            </div>
+            <div class="log-nav">
+              <button type="button" class="log-arrow" id="log-prev" aria-label="Newer releases"><i data-icon="arrowRight" data-size="18"></i></button>
+              <button type="button" class="log-arrow" id="log-next" aria-label="Older releases"><i data-icon="arrowRight" data-size="18"></i></button>
+            </div>
+          </div>
+          <div class="log-viewport" id="log-viewport" tabindex="0" role="region" aria-label="Release highlights, newest first">
+            <ol class="log-track" id="log-track">
+            <li class="log-item" style="--c: var(--lane-1)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill" style="--pill: var(--lane-1)">v0.9.3</span><time datetime="2026-11">November 2026</time></header>
+                <h3>Diffs that wrap, a graph that fills the pane</h3>
+                <p>Long lines wrap in hunk, inline and split diffs, or scroll with their line numbers pinned. An open diff follows its file as you stage it, and the graph fills tall monitors.</p>
+              </article>
+            </li>
+            <li class="log-item" style="--c: var(--lane-0)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill" style="--pill: var(--lane-0)">v0.9.1</span><time datetime="2026-11">November 2026</time></header>
+                <h3>Clone anything you can see</h3>
+                <p>Search to clone now reaches every repository your account can see on GitHub, GitHub Enterprise and GitLab, not only the ones you own.</p>
+              </article>
+            </li>
+            <li class="log-item" style="--c: var(--lane-5)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill" style="--pill: var(--lane-5)">v0.9.0</span><time datetime="2026-11">November 2026</time></header>
+                <h3>Signed in-app updates</h3>
+                <p>Check for Updates downloads a release only when a manifest signed with Rookery's own key vouches for every file. Submodules' files can be staged and committed from the parent's commit panel.</p>
+              </article>
+            </li>
+            <li class="log-item" style="--c: var(--lane-3)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill" style="--pill: var(--lane-3)">v0.8.0</span><time datetime="2026-11">November 2026</time></header>
+                <h3>A full-width conflict editor</h3>
+                <p>The merge editor opens at the full width of the window, already scrolled to its first conflict, and steps through the conflicted files from its toolbar.</p>
+              </article>
+            </li>
+            <li class="log-item" style="--c: var(--lane-2)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill" style="--pill: var(--lane-2)">v0.7.0</span><time datetime="2026-10">October 2026</time></header>
+                <h3>Self-repair, and smarter submodule conflicts</h3>
+                <p>A damaged commit-graph cache is repaired and the command retried. Conflicted submodule pointers are settled by commit instead of opening an empty text merge.</p>
+              </article>
+            </li>
+            <li class="log-item" style="--c: var(--lane-1)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill" style="--pill: var(--lane-1)">v0.6.0</span><time datetime="2026-10">October 2026</time></header>
+                <h3>Isolate sees the whole story</h3>
+                <p>A branch you pulled down from its remote shows its whole line back to its real base, with a gold ring marking where it landed on your machine.</p>
+              </article>
+            </li>
+            <li class="log-item" style="--c: var(--lane-0)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill" style="--pill: var(--lane-0)">v0.5.0</span><time datetime="2026-10">October 2026</time></header>
+                <h3>The Harbor becomes home</h3>
+                <p>The Harbor sits in front of your tabs under its own lighthouse and leads to the Launchpad. Remotes are checked when it matters instead of fetched every minute.</p>
+              </article>
+            </li>
+            <li class="log-item" style="--c: var(--lane-6)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill" style="--pill: var(--lane-6)">v0.4.0</span><time datetime="2026-10">October 2026</time></header>
+                <h3>Pick conflict lines one by one</h3>
+                <p>A new merge editor: Yours and Theirs over an editable Result. Submodule commits are recorded automatically, and synced operations decide routine cases without asking.</p>
+              </article>
+            </li>
+            <li class="log-item" style="--c: var(--lane-4)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill" style="--pill: var(--lane-4)">v0.3.0</span><time datetime="2026-10">October 2026</time></header>
+                <h3>Branch color bands</h3>
+                <p>Each graph row is tinted in its branch color from the node to the message. Left-panel sections keep their order and scroll on their own.</p>
+              </article>
+            </li>
+            <li class="log-item" style="--c: var(--lane-7)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill" style="--pill: var(--lane-7)">v0.2.0</span><time datetime="2026-10">October 2026</time></header>
+                <h3>Your agent writes the commit message</h3>
+                <p>Write message asks your local agent for a commit message. Pull branches without checking them out, find text in any diff, and edit a file's working copy from a commit's details.</p>
+              </article>
+            </li>
+            <li class="log-item log-end" style="--c: var(--accent)">
+              <span class="log-node" aria-hidden="true"></span>
+              <article class="log-card">
+                <header><span class="ref-pill head" style="--pill: var(--accent)">v0.1.0</span><time datetime="2026-10">October 2026</time></header>
+                <h3>Liftoff</h3>
+                <p>The first release: the commit graph, branch lineage, submodule sync, hosting integrations and local agents.</p>
+                <a class="log-all" href="https://github.com/Richcb5790/RookeryDesktop/releases">Every release on GitHub<i data-icon="external" data-size="14"></i></a>
+              </article>
+            </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ TRUST ============ -->
+      <section class="scene trust" id="trust" tabindex="-1" aria-labelledby="tr-title" data-sky="green">
+        <div class="container">
+          <div class="scene-head center">
+            <p class="eyebrow" data-reveal>Private by design</p>
+            <h2 class="h2" id="tr-title">No account. No cloud.<br /><span class="accent-text">Just you and git.</span></h2>
+            <p class="lede" data-reveal="1">
+              Rookery runs entirely on your computer. There's no Rookery account and no service behind it, and git itself does the work.
+            </p>
+          </div>
+          <div class="trust-grid">
+            <ul class="trust-cards">
+              <li class="trust-card" data-reveal data-tilt="5" style="--t: var(--success)">
+                <i data-icon="cloudOff" data-size="22"></i>
+                <h3>Nothing to sign up for</h3>
+                <p>Rookery has no backend of its own. There's nothing to sign in to, and your repositories stay where they are.</p>
+              </li>
+              <li class="trust-card" data-reveal="1" data-tilt="5" style="--t: var(--info)">
+                <i data-icon="terminal" data-size="22"></i>
+                <h3>Runs real git</h3>
+                <p>Every command goes through the git CLI, so hooks, signing, LFS and credential helpers behave exactly as they do in your terminal.</p>
+              </li>
+              <li class="trust-card" data-reveal="2" data-tilt="5" style="--t: var(--accent)">
+                <i data-icon="key" data-size="22"></i>
+                <h3>Never stores git credentials</h3>
+                <p>Git Credential Manager or ssh-agent handle them. Tokens for connected accounts are encrypted with your OS keychain and never reach the window.</p>
+              </li>
+              <li class="trust-card" data-reveal="1" data-tilt="5" style="--t: var(--purple)">
+                <i data-icon="verified" data-size="22"></i>
+                <h3>Signed releases</h3>
+                <p>The Windows installer is code-signed. The Linux AppImage and <code>.deb</code> are GPG-signed, with checksums published beside them.</p>
+              </li>
+              <li class="trust-card" data-reveal="2" data-tilt="5" style="--t: var(--lane-6)">
+                <i data-icon="lock" data-size="22"></i>
+                <h3>Updates only on request</h3>
+                <p>Nothing checks in the background. An update installs only when a manifest signed with Rookery's own key vouches for every file, and never downgrades.</p>
+              </li>
+              <li class="trust-card" data-reveal="3" data-tilt="5" style="--t: var(--warn)">
+                <i data-icon="eye" data-size="22"></i>
+                <h3>Agents read, you decide</h3>
+                <p>Local agents run read-only by default. They propose, and nothing is written until you save it.</p>
+              </li>
+            </ul>
+            <div class="verify" data-reveal="2" aria-hidden="true">
+              <div class="verify-head"><span></span><span></span><span></span><b>Verify your download</b></div>
+              <pre class="verify-body" id="verify-body"><span class="v-line"><i>PS&gt;</i> Get-AuthenticodeSignature .\Rookery-Setup-<span data-version>0.9.3</span>.exe</span>
+<span class="v-line v-ok">Status : Valid</span>
+<span class="v-line"><i>$</i> gpg --verify SHA256SUMS.asc</span>
+<span class="v-line"><i>$</i> sha256sum -c SHA256SUMS --ignore-missing</span>
+<span class="v-line v-ok">Rookery-<span data-version>0.9.3</span>.AppImage: OK</span>
+<span class="v-line v-ok">rookery_<span data-version>0.9.3</span>_amd64.deb: OK</span></pre>
+              <div class="verify-seal"><i data-icon="verified" data-size="30"></i></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ FAQ ============ -->
+      <section class="scene faq" id="faq" tabindex="-1" aria-labelledby="faq-title" data-sky="cyan">
+        <div class="container faq-grid">
+          <div class="scene-head">
+            <p class="eyebrow" data-reveal>Questions</p>
+            <h2 class="h2" id="faq-title">Before you launch.</h2>
+            <p class="lede" data-reveal="1">Short answers to what people ask first.</p>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item" data-reveal open>
+              <summary><h3>What is Rookery?</h3><i data-icon="chevron" data-size="20"></i></summary>
+              <div class="faq-a"><p>Rookery is a desktop Git client, a Git GUI for Windows and Linux. It shows your repository as a visual commit graph and covers everyday Git: staging, committing, branching, merging, rebasing, stashing and pushing. On top of that it adds branch lineage, which tells the story of any branch, and submodule sync, which carries each operation through every submodule.</p></div>
+            </details>
+            <details class="faq-item" data-reveal="1">
+              <summary><h3>Is Rookery free?</h3><i data-icon="chevron" data-size="20"></i></summary>
+              <div class="faq-a"><p>Rookery is free to download. There's no account to create, no subscription and nothing to sign in to.</p></div>
+            </details>
+            <details class="faq-item" data-reveal="1">
+              <summary><h3>Which operating systems does Rookery run on?</h3><i data-icon="chevron" data-size="20"></i></summary>
+              <div class="faq-a"><p>Windows 10 and 11 (64-bit), with a signed installer, and Linux, as an AppImage or a <code>.deb</code> for Debian and Ubuntu. A macOS build is planned and is waiting on Apple code signing.</p></div>
+            </details>
+            <details class="faq-item" data-reveal="2">
+              <summary><h3>Does Rookery work with Git submodules?</h3><i data-icon="chevron" data-size="20"></i></summary>
+              <div class="faq-a"><p>Yes, and it's one of the things Rookery was built for. With submodule sync on, creating, checking out, merging, pushing, pulling, renaming, deleting and rebasing a branch carry through every submodule, at any depth. Merges happen submodule-first and the parent's pointers resolve to the merge results. Every step is journaled and can be rolled back.</p></div>
+            </details>
+            <details class="faq-item" data-reveal="2">
+              <summary><h3>Which Git hosts and issue trackers does it connect to?</h3><i data-icon="chevron" data-size="20"></i></summary>
+              <div class="faq-a"><p>GitHub and GitHub Enterprise Server, GitLab.com and self-managed GitLab, Bitbucket Cloud and Data Center, and Azure DevOps, for repositories and pull requests. Issues come from GitHub, GitLab, Azure Boards, Jira and Trello. Rookery also works with any plain Git remote.</p></div>
+            </details>
+            <details class="faq-item" data-reveal="3">
+              <summary><h3>Does Rookery have AI built in? Where does my code go?</h3><i data-icon="chevron" data-size="20"></i></summary>
+              <div class="faq-a"><p>Rookery has no AI of its own and no service behind it. If you set one up, it uses a coding agent already installed on your computer, such as Claude Code, Codex, Copilot CLI or Gemini CLI, signed in as you. The agent talks to its own provider exactly as it does in your terminal, and by default it can only read. Without an agent, nothing is sent anywhere.</p></div>
+            </details>
+            <details class="faq-item" data-reveal="3">
+              <summary><h3>I use GitKraken, Sourcetree, Fork or GitHub Desktop. What's different?</h3><i data-icon="chevron" data-size="20"></i></summary>
+              <div class="faq-a"><p>The everyday tools are where you'd expect them: a commit graph, staging down to the line, interactive rebase, worktrees, Git LFS, Git Flow and a built-in terminal. What's different is Isolate, which filters the graph down to one branch's story; submodule sync; AI through the agent you already have instead of a hosted model; and no account or cloud service at all.</p></div>
+            </details>
+            <details class="faq-item" data-reveal="4">
+              <summary><h3>Do I need Git installed?</h3><i data-icon="chevron" data-size="20"></i></summary>
+              <div class="faq-a"><p>Yes: Git 2.40 or newer on your <code>PATH</code>, or point Rookery at it in Preferences. Rookery runs the real git command line for everything, which is why your hooks, commit signing and credential helpers keep working unchanged.</p></div>
+            </details>
+            <details class="faq-item" data-reveal="4">
+              <summary><h3>How does Rookery update?</h3><i data-icon="chevron" data-size="20"></i></summary>
+              <div class="faq-a"><p>When you ask it to. Preferences &rarr; Updates &rarr; Check for Updates looks for a newer release, downloads it, verifies its signature and offers to restart. A <code>.deb</code> install is pointed to the release page instead. Nothing checks in the background.</p></div>
+            </details>
+          </div>
+        </div>
+      </section>
+
       <!-- ============ DOWNLOAD ============ -->
-      <section class="scene download" id="download" tabindex="-1" aria-labelledby="dl-title" data-parallax>
+      <section class="scene download" id="download" tabindex="-1" aria-labelledby="dl-title" data-parallax data-sky="gold">
         <div class="container">
           <div class="dl-hero">
             <div class="dl-mascot" data-speed="-0.15" aria-hidden="true">
@@ -484,10 +857,10 @@
             </div>
             <div class="scene-head dl-head">
               <p class="eyebrow" data-reveal>Download</p>
-              <h2 class="h2" id="dl-title" data-reveal="1">Ready for launch.</h2>
+              <h2 class="h2" id="dl-title">Ready for launch.</h2>
               <p class="lede" data-reveal="2">
-                Rookery runs on Windows, macOS and Linux. You'll need <b>Git 2.40 or newer</b> on your <code>PATH</code>,
-                or point Rookery at it in Preferences.
+                Rookery runs on Windows and Linux today, with macOS on the way. You'll need <b>Git 2.40 or newer</b> on
+                your <code>PATH</code>, or point Rookery at it in Preferences.
               </p>
               <p class="dl-status" id="dl-status" data-reveal="3" aria-live="polite">Checking for the latest release…</p>
             </div>
@@ -497,26 +870,26 @@
             <article class="os-card" data-os="windows" data-reveal="1" data-tilt="5">
               <div class="os-top"><i data-icon="windows" data-size="34" class="os-logo"></i><span class="os-yours">Your system</span></div>
               <h3>Windows</h3>
-              <p class="os-req">Windows 10 or 11, 64-bit · Installer (.exe)</p>
+              <p class="os-req">Windows 10 or 11, 64-bit · Signed installer (.exe)</p>
               <div class="os-actions"></div>
             </article>
             <article class="os-card" data-os="mac" data-reveal="2" data-tilt="5">
               <div class="os-top"><i data-icon="apple" data-size="34" class="os-logo"></i><span class="os-yours">Your system</span></div>
               <h3>macOS</h3>
-              <p class="os-req">Disk image (.dmg)</p>
+              <p class="os-req">Waiting on Apple code signing</p>
               <div class="os-actions"></div>
             </article>
             <article class="os-card" data-os="linux" data-reveal="3" data-tilt="5">
               <div class="os-top"><i data-icon="linux" data-size="34" class="os-logo"></i><span class="os-yours">Your system</span></div>
               <h3>Linux</h3>
-              <p class="os-req">AppImage, or a .deb for Debian and Ubuntu</p>
+              <p class="os-req">AppImage, or a .deb for Debian and Ubuntu · GPG-signed</p>
               <div class="os-actions"></div>
             </article>
           </div>
           <p class="dl-foot" id="dl-foot">
             Every build is published on
-            <a href="https://github.com/Richcb5790/RookeryDesktop/releases" id="dl-releases-link">GitHub Releases</a>,
-            with notes on what changed.
+            <a href="https://github.com/Richcb5790/RookeryDesktop/releases" id="dl-releases-link">GitHub Releases</a>
+            with its signatures and checksums. Once installed, Rookery updates itself when you ask it to.
           </p>
         </div>
       </section>
@@ -532,14 +905,19 @@
           <img src="./src/assets/brand/space-icon-small.svg" width="40" height="40" alt="" />
           <div>
             <b>Rookery</b>
-            <span>See every branch's story, and keep your submodules in step.</span>
+            <span>The visual Git client that tells every branch's story, and keeps your submodules in step.</span>
           </div>
         </div>
         <nav class="footer-links" aria-label="Footer">
           <a href="#graph">Commit graph</a>
           <a href="#integrations">Integrations</a>
-          <a href="#isolate">Isolate</a>
+          <a href="#isolate">Branch lineage</a>
+          <a href="#merge">Merge editor</a>
           <a href="#agents">AI agents</a>
+          <a href="#features">Features</a>
+          <a href="#whats-new">What's new</a>
+          <a href="#trust">Privacy</a>
+          <a href="#faq">FAQ</a>
           <a href="#download">Download</a>
           <a href="https://github.com/Richcb5790/RookeryDesktop/releases">Releases</a>
         </nav>

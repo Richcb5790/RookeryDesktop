@@ -23,7 +23,8 @@ export function initHero(reduced: boolean): void {
   const intro = gsap.timeline({ defaults: { ease: 'power4.out' } })
   intro
     .from('.hero-title .line > span', { yPercent: 110, duration: 1.2, stagger: 0.12 })
-    .from('.hero-eyebrow, .hero-sub, .hero-cta, .hero-meta', { opacity: 0, y: 24, duration: 1, stagger: 0.08 }, 0.35)
+    .from('.hero-badge, .hero-kicker, .hero-sub, .hero-cta, .hero-meta', { opacity: 0, y: 24, duration: 1, stagger: 0.08 }, 0.3)
+    .from('.mascot-orbits', { opacity: 0, scale: 0.6, duration: 2.2, ease: 'expo.out' }, 0.5)
     .from('.hero-mascot', { opacity: 0, y: 220, x: 80, rotation: 14, duration: 1.8, ease: 'expo.out' }, 0.15)
     .from(stars, { scale: 0, transformOrigin: '50% 50%', duration: 0.6, stagger: { each: 0.05, from: 'end' }, ease: 'back.out(3)' }, 0.4)
     .to(edges, { strokeDashoffset: 0, duration: 1.4, stagger: { each: 0.05, from: 'end' }, ease: 'power2.inOut' }, 0.5)

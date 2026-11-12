@@ -84,6 +84,8 @@ export interface RenderOptions {
   /** Small solid dots, for dense graphs where initials wouldn't be legible */
   plain?: boolean
   nodeR?: number
+  /** Draw branch colour bands from each node to this x (where the message column starts) */
+  bands?: number
 }
 
 export const edgeMarkup = (e: Edge): string =>
@@ -104,7 +106,20 @@ export function nodeMarkup(c: Commit, x: number, y: number, r: number, o: Render
 /** Renders edges then nodes into an <svg>; elements carry data-id / data-from / data-to for animation. */
 export function renderGraph(svg: SVGSVGElement, commits: Commit[], m: Metrics, o: RenderOptions = {}): void {
   const r = o.nodeR ?? Math.min(m.rowH * 0.32, 10)
+  // The app's branch colour bands: a faint band in the commit's lane colour from its node to the
+  // message column, ending in a brighter edge.
+  const bands = o.bands
+    ? `<g class="g-bands">${commits
+        .map((c, i) => {
+          const x = laneX(c.lane, m)
+          const y = rowY(i, m)
+          const hgt = m.rowH - 8
+          return `<g class="g-band" data-id="${c.id}" data-c="${c.color}"><rect x="${x}" y="${y - hgt / 2}" width="${Math.max(0, o.bands! - x)}" height="${hgt}" rx="3" fill="var(--lane-${c.color})" opacity=".2"/><rect x="${o.bands! - 2}" y="${y - hgt / 2}" width="2" height="${hgt}" fill="var(--lane-${c.color})" opacity=".8"/></g>`
+        })
+        .join('')}</g>`
+    : ''
   svg.innerHTML =
+    bands +
     `<g class="g-edges">${layoutEdges(commits, m).map(edgeMarkup).join('')}</g>` +
     `<g class="g-nodes">${commits.map((c, i) => nodeMarkup(c, laneX(c.lane, m), rowY(i, m), r, o)).join('')}</g>`
 }

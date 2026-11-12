@@ -587,6 +587,154 @@
   font-size: 11px;
 }
 
+/* ---------- Commit message demo: spans both columns, copy beside the commit form ---------- */
+
+.message-demo {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: 28px;
+  margin-top: 20px;
+}
+
+.message-demo .demo-head {
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.cm-window {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+}
+
+.cm-files {
+  padding: 16px;
+  border-right: 1px solid var(--border-soft);
+  background: var(--bg);
+}
+
+.cm-files b {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.cm-files b span {
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  color: var(--text-2);
+  font-size: 11px;
+}
+
+.cm-files div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  overflow: hidden;
+  color: var(--text-2);
+  font: 12px var(--font-mono);
+  white-space: nowrap;
+}
+
+.cm-form {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  background: var(--bg-elev);
+}
+
+.cm-field {
+  position: relative;
+  padding: 8px 12px 9px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg);
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+.cm-field small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cm-field > div {
+  min-height: 21px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.cm-body > div {
+  min-height: calc(4 * 1.6 * 13px);
+}
+
+.cm-summary em {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  color: var(--faint);
+  font: 500 10.5px var(--font-mono);
+  font-style: normal;
+}
+
+.cm-form.writing .cm-field {
+  border-color: rgba(255, 201, 60, 0.55);
+  box-shadow: 0 0 0 3px rgba(255, 201, 60, 0.12);
+}
+
+/* The caret sits in the summary until the description starts, then moves there. */
+.cm-form.writing:has(#cm-body:empty) #cm-summary::after,
+.cm-form.writing #cm-body:not(:empty)::after {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  margin-left: 2px;
+  vertical-align: -2px;
+  background: var(--accent);
+  animation: caret 1s steps(1) infinite;
+}
+
+.cm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.cm-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--success);
+  font-size: 11.5px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.4s,
+    transform 0.4s var(--ease-out);
+}
+
+.cm-note.on {
+  opacity: 1;
+  transform: none;
+}
+
+.cm-note b {
+  font-weight: 600;
+}
+
 /* ---------- Promises ---------- */
 
 .promise-row {
@@ -627,6 +775,13 @@
   .agent-demos {
     grid-template-columns: 1fr;
   }
+  .message-demo {
+    grid-template-columns: 1fr;
+    margin-top: 0;
+  }
+  .message-demo .demo-head {
+    flex-direction: row;
+  }
   .promise-row {
     grid-template-columns: 1fr 1fr;
   }
@@ -642,6 +797,16 @@
   .cf-pane.ours {
     border-right: 0;
     border-bottom: 1px solid var(--border-soft);
+  }
+  .cm-window {
+    grid-template-columns: 1fr;
+  }
+  .cm-files {
+    border-right: 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .message-demo .demo-head {
+    flex-direction: column;
   }
   .chips {
     border-radius: 18px;

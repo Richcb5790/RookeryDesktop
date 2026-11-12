@@ -39,4 +39,10 @@ export function scrollToEl(target: HTMLElement): void {
   }
 }
 
+/** Scrolls the page to `y`, gliding when smooth scrolling is on. */
+export function scrollToY(y: number): void {
+  if (lenis) lenis.scrollTo(y, { duration: 0.9 })
+  else scrollTo({ top: y, behavior: 'auto' })
+}
+
 export { gsap, ScrollTrigger }
