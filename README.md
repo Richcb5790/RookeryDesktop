@@ -31,6 +31,8 @@ The copy describes the app, so it needs a pass when the app gains something wort
   commits are the source of truth for what a feature does.
 - **Version numbers aren't written down anywhere.** The hero badge, the download cards and the
   "verify your download" terminal take the version from the latest GitHub release when the page loads.
+  The hero badge's text (`.hb-text` in `index.html`) is written by hand, though: since the newest
+  version appears beside it, keep it to the newest flight log card's headline.
 - **macOS** is described as on its way. Once a release carries a `.dmg`, its download card lights up
   on its own, but the wording around it ("Windows and Linux", in the hero, the FAQ, the download
   section, the page's `<head>` and `src/seo.ts`) needs changing by hand.
